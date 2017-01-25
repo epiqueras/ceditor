@@ -1,0 +1,40 @@
+.file-tabs-container {
+  height: 40px;
+  width: 90vw;
+  padding: 10px 0;
+
+  ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    width: 90vw;
+    display: flex;
+  }
+
+  li {
+    cursor: pointer;
+    border-radius: 10px;
+    margin-left: 10px;
+    height: 40px;
+    line-height: 40px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    padding: 0 10px;
+    user-select: none;
+    -webkit-user-select: none;
+
+    &:last-child {
+      margin-right: 10px;
+    }
+
+    @include themify {
+      color: theme(primary-text);
+      background-color: theme(file-tab);
+
+      &:hover {
+        background-color: darken(theme(file-tab), 25%);
+      }
+    }
+  }
+}

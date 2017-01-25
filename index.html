@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html class="default">
+  <head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+  </head>
+  <body>
+    <div id="app"></div>
+  </body>
+  <script>
+    /* eslint-disable */
+    (function() {
+      const script = document.createElement('script');
+      script.src = process.env.ENV === 'production' ? './dist/bundle.js' : 'http://localhost:8080/bundle.js';
+      document.body.appendChild(script);
+    }());
+  </script>
+</html>
