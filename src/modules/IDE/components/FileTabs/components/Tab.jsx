@@ -6,8 +6,8 @@ import ItemTypes from './ItemTypes';
 const tabSource = {
   beginDrag(props) {
     return {
-      filePath: props.fileInfo.filePath,
-      originalIndex: props.findTab(props.fileInfo.filePath).tabIndex,
+      filePath: props.filePath,
+      originalIndex: props.findTab(props.filePath).tabIndex,
     };
   },
 
@@ -28,7 +28,7 @@ const tabTarget = {
 
   hover(props, monitor) {
     const { filePath: draggedFilePath } = monitor.getItem();
-    const { filePath: overFilePath } = props.fileInfo;
+    const { filePath: overFilePath } = props;
 
     if (draggedFilePath !== overFilePath) {
       const { tabIndex: overIndex } = props.findTab(overFilePath);
@@ -50,17 +50,15 @@ function collectTarget(connect) {
   };
 }
 
-const Tab = ({ fileInfo, connectDragSource, connectDropTarget, isDragging }) => (
+const Tab = ({ fileName, connectDragSource, connectDropTarget, isDragging }) => (
   connectDragSource(connectDropTarget(
-    <li style={{ opacity: isDragging ? 0 : 1 }}>{fileInfo.fileName}</li>,
+    <li style={{ opacity: isDragging ? 0 : 1 }}>{fileName}</li>,
   ))
 );
 
 Tab.propTypes = {
-  fileInfo: PropTypes.shape({
-    fileName: PropTypes.string.isRequired,
-    filePath: PropTypes.string.isRequired,
-  }).isRequired,
+  fileName: PropTypes.string.isRequired,
+  filePath: PropTypes.string.isRequired,
   connectDragSource: PropTypes.func.isRequired,
   connectDropTarget: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,

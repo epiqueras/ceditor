@@ -1,0 +1,23 @@
+.editor {
+  height: calc(100vh - 60px);
+  margin-top: 60px;
+
+  > div {
+    height: inherit;
+
+    > .CodeMirror {
+      height: inherit;
+    }
+  }
+}
+
+.cm-matchhighlight {
+  @include themify {
+    background: theme(match-highlight);
+  }
+}
+
+.CodeMirror-foldmarker {
+  color: inherit;
+  text-shadow: inherit;
+}

@@ -14,11 +14,11 @@ const initialState = {
     },
     {
       fileName: 'Random-Shift.c',
-      filePath: '/Desktop/Random-Shift.c',
+      filePath: '/Desktop/Ranqdom-Shift.c',
     },
     {
       fileName: 'What-Shift.c',
-      filePath: '/Desktop/What-Shift.c',
+      filePath: '/Desktop/What-Swhift.c',
     },
   ],
 };

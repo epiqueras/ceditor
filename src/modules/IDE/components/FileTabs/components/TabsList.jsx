@@ -24,7 +24,7 @@ class TabsList extends Component {
 
   findTab(filePath) {
     const { fileTabs } = this.props;
-    const tab = fileTabs.find(fileInfo => fileInfo.filePath === filePath);
+    const tab = fileTabs.find(file => file.filePath === filePath);
     return {
       tab,
       tabIndex: fileTabs.indexOf(tab),
@@ -33,19 +33,21 @@ class TabsList extends Component {
 
   render() {
     const { connectDropTarget, fileTabs, doMoveTab } = this.props;
-    const tabs = fileTabs.map(fileInfo => (
+    const tabs = fileTabs.map(file => (
       <Tab
-        key={fileInfo.filePath}
-        fileInfo={fileInfo}
+        key={file.filePath}
+        fileName={file.fileName}
+        filePath={file.filePath}
         findTab={this.findTab}
         doMoveTab={doMoveTab}
       />
     ));
     return connectDropTarget(
-      <div className="file-tabs-container">
+      <div className="file-tabs-container CodeMirror">
         <ul>
           {tabs}
         </ul>
+        <button>Run</button>
       </div>,
     );
   }

@@ -1,19 +1,12 @@
 html,
-body, {
+body,
+#app,
+.app-root,
+.ide-root {
   border: 0;
   margin: 0;
   padding: 0;
   height: 100vh;
   width: 100vw;
-}
-
-body {
-  display: flex;
-}
-
-#app,
-.app-root,
-.ide-root {
-  flex: 1;
-  display: flex;
+  overflow: hidden;
 }

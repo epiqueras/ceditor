@@ -5,6 +5,10 @@ import electron from 'electron';
 import path from 'path';
 import url from 'url';
 
+import MenuTemplate from './MenuTemplate';
+
+const Menu = electron.Menu;
+
 if (process.env.NODE_ENV === 'development') {
   const devToolsInstaller = require('electron-devtools-installer').default;
   const reactDevTools = require('electron-devtools-installer').REACT_DEVELOPER_TOOLS;
@@ -29,6 +33,9 @@ const BrowserWindow = electron.BrowserWindow;
 let mainWindow;
 
 function createWindow() {
+  const menu = Menu.buildFromTemplate(MenuTemplate);
+  Menu.setApplicationMenu(menu);
+
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 800, height: 600 });
 
