@@ -7,7 +7,6 @@
 @import url(../../node_modules/codemirror/addon/scroll/simplescrollbars.css);
 @import url(../../node_modules/codemirror/theme/abcdef.css);
 @import url(../../node_modules/codemirror/theme/ambiance.css);
-@import url(../../node_modules/codemirror/theme/abcdef.css);
 @import url(../../node_modules/codemirror/theme/blackboard.css);
 @import url(../../node_modules/codemirror/theme/dracula.css);
 @import url(../../node_modules/codemirror/theme/erlang-dark.css);
@@ -50,8 +49,6 @@ body {
   height: 40px;
   line-height: 40px;
   padding: 10px 0; }
-  .default .file-tabs-container {
-    background: #23241f; }
   .file-tabs-container ul {
     list-style-type: none;
     margin: 0;
@@ -89,3 +86,7 @@ body {
 
 .default .cm-matchhighlight {
   background: yellow; }
+
+.CodeMirror-foldmarker {
+  color: inherit;
+  text-shadow: inherit; }

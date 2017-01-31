@@ -35,6 +35,87 @@ const MenuTemplate = [
     ],
   },
   {
+    label: 'Theme',
+    submenu: [
+      {
+        label: 'abcdef',
+        type: 'radio',
+      },
+      {
+        label: 'ambiance',
+        type: 'radio',
+      },
+      {
+        label: 'blackboard',
+        type: 'radio',
+      },
+      {
+        label: 'dracula',
+        type: 'radio',
+      },
+      {
+        label: 'erlang-dark',
+        type: 'radio',
+      },
+      {
+        label: 'hopscotch',
+        type: 'radio',
+      },
+      {
+        label: 'icecoder',
+        type: 'radio',
+      },
+      {
+        label: 'material',
+        type: 'radio',
+      },
+      {
+        label: 'mbo',
+        type: 'radio',
+      },
+      {
+        label: 'mdn-like',
+        type: 'radio',
+      },
+      {
+        label: 'monokai',
+        type: 'radio',
+      },
+      {
+        label: 'neo',
+        type: 'radio',
+      },
+      {
+        label: 'panda-syntax',
+        type: 'radio',
+      },
+      {
+        label: 'paraiso-light',
+        type: 'radio',
+      },
+      {
+        label: 'pastel-on-dark',
+        type: 'radio',
+      },
+      {
+        label: 'rubyblue',
+        type: 'radio',
+      },
+      {
+        label: 'solarized',
+        type: 'radio',
+      },
+      {
+        label: 'the-matrix',
+        type: 'radio',
+      },
+      {
+        label: 'yeti',
+        type: 'radio',
+      },
+    ],
+  },
+  {
     label: 'View',
     submenu: [
       {
@@ -128,7 +209,7 @@ if (process.platform === 'darwin') {
     },
   );
   // Window menu.
-  MenuTemplate[3].submenu = [
+  MenuTemplate[4].submenu = [
     {
       label: 'Close',
       accelerator: 'CmdOrCtrl+W',

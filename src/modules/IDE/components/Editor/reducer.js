@@ -1,6 +1,9 @@
-import { CHANGE_ACTIVE_FILE } from './actions';
+import { ipcRenderer } from 'electron';
+
+import { CHANGE_THEME, CHANGE_ACTIVE_FILE } from './actions';
 
 const initialState = {
+  theme: ipcRenderer.sendSync('getTheme'),
   activeFilePath: '/Desktop/Array-Shift.c',
   openFiles: [
     {
@@ -29,11 +32,14 @@ int main() {
 
 const editorReducer = (state = initialState, action) => {
   switch (action.type) {
+    case CHANGE_THEME:
+      return { ...state, theme: action.theme };
     default:
       return state;
   }
 };
 
+export const getTheme = state => state.IDEReducer.editorReducer.theme;
 export const getActiveFilePath = state => state.IDEReducer.editorReducer.activeFilePath;
 export const getOpenFiles = state => state.IDEReducer.editorReducer.openFiles;
 

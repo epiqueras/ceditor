@@ -33,15 +33,15 @@ class TabsList extends Component {
 
   render() {
     const { connectDropTarget, fileTabs, doMoveTab } = this.props;
-    const tabs = fileTabs.map(file => (
+    const tabs = fileTabs.map(file =>
       <Tab
         key={file.filePath}
         fileName={file.fileName}
         filePath={file.filePath}
         findTab={this.findTab}
         doMoveTab={doMoveTab}
-      />
-    ));
+      />,
+    );
     return connectDropTarget(
       <div className="file-tabs-container CodeMirror">
         <ul>

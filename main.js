@@ -1,26 +1,17 @@
 /* eslint-disable global-require */
 /* eslint-disable no-console */
 /* eslint-disable import/no-extraneous-dependencies */
-import electron from 'electron';
+import electron, { ipcMain } from 'electron';
 import path from 'path';
 import url from 'url';
+import Config from 'electron-config';
 
 import MenuTemplate from './MenuTemplate';
 
 const Menu = electron.Menu;
-
-if (process.env.NODE_ENV === 'development') {
-  const devToolsInstaller = require('electron-devtools-installer').default;
-  const reactDevTools = require('electron-devtools-installer').REACT_DEVELOPER_TOOLS;
-  const reduxDevTools = require('electron-devtools-installer').REDUX_DEVTOOLS;
-
-  devToolsInstaller(reactDevTools)
-  .then(name => console.log(`Added Extension: ${name}`))
-  .catch(err => console.error('An error occurred: ', err));
-
-  devToolsInstaller(reduxDevTools)
-  .then(name => console.log(`Added Extension: ${name}`))
-  .catch(err => console.error('An error occurred: ', err));
+const config = new Config();
+if (!config.get('theme')) {
+  config.set('theme', 'material');
 }
 
 // Module to control application life.
@@ -28,14 +19,15 @@ const app = electron.app;
 // Module to create native browser window.
 const BrowserWindow = electron.BrowserWindow;
 
+// Respond to config requests
+// eslint-disable-next-line no-return-assign
+ipcMain.on('getTheme', event => event.returnValue = config.get('theme')); // eslint-disable-line no-param-reassign
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
 function createWindow() {
-  const menu = Menu.buildFromTemplate(MenuTemplate);
-  Menu.setApplicationMenu(menu);
-
   // Create the browser window.
   mainWindow = new BrowserWindow({ width: 800, height: 600 });
 
@@ -69,7 +61,43 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+  if (process.env.NODE_ENV === 'development') {
+    const devToolsInstaller = require('electron-devtools-installer').default;
+    const reactDevTools = require('electron-devtools-installer').REACT_DEVELOPER_TOOLS;
+    const reduxDevTools = require('electron-devtools-installer').REDUX_DEVTOOLS;
+
+    devToolsInstaller(reactDevTools)
+    .then(name => console.log(`Added Extension: ${name}`))
+    .catch(err => console.error('An error occurred: ', err));
+
+    devToolsInstaller(reduxDevTools)
+    .then(name => console.log(`Added Extension: ${name}`))
+    .catch(err => console.error('An error occurred: ', err));
+  }
+
+  // Get and set current theme
+  const currentTheme = config.get('theme');
+  const menu = Menu.buildFromTemplate(MenuTemplate);
+  const themesSubmenu = menu.items.find(menuItem => menuItem.label === 'Theme').submenu.items;
+  themesSubmenu.find(subMenuItem => subMenuItem.label === currentTheme).checked = true;
+
+  // Add click events
+  themesSubmenu.forEach((subMenuItem) => {
+    // eslint-disable-next-line no-param-reassign
+    subMenuItem.click = () => {
+      mainWindow.webContents.send('themeChanges', subMenuItem.label);
+      // eslint-disable-next-line no-param-reassign
+      subMenuItem.checked = true;
+      config.set('theme', subMenuItem.label);
+    };
+  });
+
+  // Attach menu
+  Menu.setApplicationMenu(menu);
+
+  createWindow();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {

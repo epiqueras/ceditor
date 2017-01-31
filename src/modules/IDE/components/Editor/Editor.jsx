@@ -1,12 +1,13 @@
 import { connect } from 'react-redux';
 
-import { changeActiveFile } from './actions';
-import { getActiveFilePath, getOpenFiles } from './reducer';
+import { changeTheme, changeActiveFile } from './actions';
+import { getTheme, getActiveFilePath, getOpenFiles } from './reducer';
 
 import TextEditor from './components/TextEditor';
 
 function mapStateToProps(state) {
   return {
+    theme: getTheme(state),
     activeFilePath: getActiveFilePath(state),
     openFiles: getOpenFiles(state),
   };
@@ -14,6 +15,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    doChangeTheme: (theme, myCodeMirror, upgradeBackground) =>
+      dispatch(changeTheme(theme, myCodeMirror, upgradeBackground)),
     doChangeActiveFile: filePath => dispatch(changeActiveFile(filePath)),
   };
 }

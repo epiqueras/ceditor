@@ -2,6 +2,7 @@
 /* global document */
 import React, { Component, PropTypes } from 'react';
 import CodeMirror from 'codemirror';
+import { ipcRenderer } from 'electron';
 
 // Modes
 import 'codemirror/mode/javascript/javascript';
@@ -71,15 +72,20 @@ import 'codemirror/addon/wrap/hardwrap';
 export default class TextEditor extends Component {
   constructor(props) {
     super(props);
+    const { doChangeTheme } = this.props;
     this.cmContainer = {};
     this.myCodeMirror = {};
+    this.getOpenFile = this.getOpenFile.bind(this);
     this.setRef = this.setRef.bind(this);
+    this.updateBackground = this.updateBackground.bind(this);
+    ipcRenderer.on('themeChanges', (event, theme) => doChangeTheme(theme, this.myCodeMirror, this.updateBackground));
   }
 
   componentDidMount() {
+    const { theme } = this.props;
     this.myCodeMirror = CodeMirror(this.cmContainer, {
       value: this.getOpenFile().fileContent,
-      theme: 'material',
+      theme,
       mode: 'text/x-csrc',
       indentUnit: 2,
       smartIndent: true,
@@ -109,9 +115,7 @@ export default class TextEditor extends Component {
     this.myCodeMirror.setOption('extraKeys', {
       'Ctrl-Space': () => this.myCodeMirror.showHint(),
     });
-
-    const { backgroundColor } = window.getComputedStyle(this.cmContainer.firstChild);
-    document.getElementsByClassName('file-tabs-container CodeMirror')[0].style.backgroundColor = backgroundColor;
+    this.updateBackground();
   }
 
   getOpenFile() {
@@ -121,6 +125,11 @@ export default class TextEditor extends Component {
 
   setRef(c) {
     this.cmContainer = c;
+  }
+
+  updateBackground() {
+    const { backgroundColor } = window.getComputedStyle(this.cmContainer.firstChild);
+    document.getElementsByClassName('file-tabs-container CodeMirror')[0].style.backgroundColor = backgroundColor;
   }
 
   render() {
@@ -133,6 +142,7 @@ export default class TextEditor extends Component {
 }
 
 TextEditor.propTypes = {
+  theme: PropTypes.string.isRequired,
   activeFilePath: PropTypes.string.isRequired,
   openFiles: PropTypes.arrayOf(
     PropTypes.shape({
@@ -141,5 +151,6 @@ TextEditor.propTypes = {
       fileContent: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  doChangeTheme: PropTypes.func.isRequired,
   doChangeActiveFile: PropTypes.func.isRequired,
 };
