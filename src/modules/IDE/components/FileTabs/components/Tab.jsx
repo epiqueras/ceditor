@@ -59,6 +59,7 @@ const Tab = ({
   isDragging,
   active,
   file,
+  removeTabAndCloseFile,
   doChangeActiveFile,
 }) => connectDragSource(connectDropTarget(
   <li
@@ -67,6 +68,7 @@ const Tab = ({
     onClick={() => !active ? doChangeActiveFile(file.path) : ''}
   >
     {file.name}
+    <span/>
   </li>,
   { dropEffect: 'move' },
 ));
@@ -81,6 +83,7 @@ Tab.propTypes = {
     path: PropTypes.string.isRequired,
   }).isRequired,
   findTab: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  removeTabAndCloseFile: PropTypes.func.isRequired,
   doMoveTab: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   doChangeActiveFile: PropTypes.func.isRequired,
 };

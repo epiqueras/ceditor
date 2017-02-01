@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import { changeTheme, changeActiveFile, createNewFile, openFile } from './actions';
+import { changeTheme, changeActiveFile, createNewFile, openFile, storeDoc } from './actions';
 import { getTheme, getActiveFilePath, getOpenFiles } from './reducer';
 
 import { addTab } from '../FileTabs/actions';
@@ -17,11 +17,11 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    doChangeTheme: (theme, myCodeMirror, upgradeBackground) =>
-      dispatch(changeTheme(theme, myCodeMirror, upgradeBackground)),
+    doChangeTheme: theme => dispatch(changeTheme(theme)),
     doChangeActiveFile: filePath => dispatch(changeActiveFile(filePath)),
     doCreateNewFile: (fileName, filePath) => dispatch(createNewFile(fileName, filePath)),
     doOpenFile: (fileName, filePath) => dispatch(openFile(fileName, filePath)),
+    doStoreDoc: (filePath, value, history) => dispatch(storeDoc(filePath, value, history)),
     doAddTab: (fileName, filePath) => dispatch(addTab(fileName, filePath)),
   };
 }

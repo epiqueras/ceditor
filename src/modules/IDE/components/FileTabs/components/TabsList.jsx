@@ -20,6 +20,7 @@ class TabsList extends Component {
   constructor(props) {
     super(props);
     this.findTab = this.findTab.bind(this);
+    this.removeTabAndCloseFile = this.removeTabAndCloseFile.bind(this);
   }
 
   findTab(filePath) {
@@ -29,6 +30,12 @@ class TabsList extends Component {
       tab,
       tabIndex: fileTabs.indexOf(tab),
     };
+  }
+
+  removeTabAndCloseFile(filePath) {
+    const { doRemoveTab, doCloseFile } = this.props;
+    doRemoveTab(filePath);
+    doCloseFile(filePath);
   }
 
   render() {
@@ -47,6 +54,7 @@ class TabsList extends Component {
           active={active}
           file={file}
           findTab={this.findTab}
+          removeTabAndCloseFile={this.removeTabAndCloseFile}
           doMoveTab={doMoveTab}
           doChangeActiveFile={doChangeActiveFile}
         />
@@ -73,7 +81,9 @@ TabsList.propTypes = {
     }),
   ).isRequired,
   doMoveTab: PropTypes.func.isRequired,
+  doRemoveTab: PropTypes.func.isRequired,
   doChangeActiveFile: PropTypes.func.isRequired,
+  doCloseFile: PropTypes.func.isRequired,
 };
 
 export default

@@ -80,7 +80,7 @@ export default class TextEditor extends Component {
     this.getOpenFile = this.getOpenFile.bind(this);
     this.createUntitled = this.createUntitled.bind(this);
     this.updateBackground = this.updateBackground.bind(this);
-    ipcRenderer.on('themeChanges', (event, theme) => doChangeTheme(theme, this.myCodeMirror, this.updateBackground));
+    ipcRenderer.on('themeChanges', (event, theme) => doChangeTheme(theme));
     ipcRenderer.on('newFile', () => this.createUntitled());
     if (openFiles.length === 0) this.createUntitled();
   }
@@ -88,7 +88,7 @@ export default class TextEditor extends Component {
   componentDidMount() {
     const { theme } = this.props;
     this.myCodeMirror = CodeMirror(this.cmContainer, {
-      value: this.getOpenFile() ? this.getOpenFile().doc : '',
+      value: this.getOpenFile() ? this.getOpenFile().value : '',
       theme,
       mode: 'text/x-csrc',
       indentUnit: 2,
@@ -124,10 +124,21 @@ export default class TextEditor extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.activeFilePath !== this.props.activeFilePath) {
-      const { doc } = this.getOpenFile();
-      if (doc.cm) this.myCodeMirror.swapDoc(doc);
-      else this.myCodeMirror.setValue(doc);
+    const { activeFilePath: prevFilePath, theme: prevTheme } = prevProps;
+    const { activeFilePath, theme, doStoreDoc } = this.props;
+    if (prevFilePath !== activeFilePath) {
+      const { value, history } = this.getOpenFile();
+      if (prevFilePath) {
+        doStoreDoc(prevFilePath,
+          this.myCodeMirror.getValue(), JSON.stringify(this.myCodeMirror.getHistory()));
+      }
+      this.myCodeMirror.setValue(value);
+      if (history) this.myCodeMirror.setHistory(JSON.parse(history));
+      else this.myCodeMirror.clearHistory();
+    }
+    if (prevTheme !== theme) {
+      this.myCodeMirror.setOption('theme', theme);
+      this.updateBackground();
     }
   }
 
@@ -142,9 +153,7 @@ export default class TextEditor extends Component {
         if (!this.props.openFiles.find(file => file.path === path)) {
           doOpenFile(name, path);
           doAddTab(name, path);
-        } else {
-          doChangeActiveFile(path);
-        }
+        } else doChangeActiveFile(path);
       }
       return false;
     };
@@ -190,12 +199,14 @@ TextEditor.propTypes = {
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       path: PropTypes.string.isRequired,
-      doc: PropTypes.string.isRequired,
+      value: PropTypes.string.isRequired,
+      history: PropTypes.string.isRequired,
     }),
   ).isRequired,
   doChangeTheme: PropTypes.func.isRequired,
   doChangeActiveFile: PropTypes.func.isRequired,
   doCreateNewFile: PropTypes.func.isRequired,
   doOpenFile: PropTypes.func.isRequired,
+  doStoreDoc: PropTypes.func.isRequired,
   doAddTab: PropTypes.func.isRequired,
 };
