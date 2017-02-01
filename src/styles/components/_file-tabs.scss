@@ -40,6 +40,10 @@
       &:hover {
         background: darken(theme(file-tab), 25%);
       }
+
+      &.active {
+        background: darken(theme(file-tab), 25%);
+      }
     }
   }
 }

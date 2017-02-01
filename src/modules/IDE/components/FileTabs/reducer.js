@@ -1,26 +1,13 @@
 import update from 'react/lib/update';
 
-import { MOVE_TAB } from './actions';
+import { MOVE_TAB, ADD_TAB } from './actions';
 
 function findTabHelper(state, action) {
-  return state.fileTabs.find(fileInfo => fileInfo.filePath === action.filePath);
+  return state.fileTabs.find(fileTab => fileTab.path === action.filePath);
 }
 
 const initialState = {
-  fileTabs: [
-    {
-      fileName: 'Array-Shift.c',
-      filePath: '/Desktop/Array-Shift.c',
-    },
-    {
-      fileName: 'Random-Shift.c',
-      filePath: '/Desktop/Ranqdom-Shift.c',
-    },
-    {
-      fileName: 'What-Shift.c',
-      filePath: '/Desktop/What-Swhift.c',
-    },
-  ],
+  fileTabs: [],
 };
 
 const fileTabsReducer = (state = initialState, action) => {
@@ -34,6 +21,11 @@ const fileTabsReducer = (state = initialState, action) => {
           ],
         },
       });
+    case ADD_TAB:
+      return {
+        ...state,
+        fileTabs: [...state.fileTabs, { name: action.fileName, path: action.filePath }],
+      };
     default:
       return state;
   }

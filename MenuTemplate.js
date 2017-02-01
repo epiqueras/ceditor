@@ -3,6 +3,14 @@ import { app } from 'electron';
 
 const MenuTemplate = [
   {
+    label: 'File',
+    submenu: [
+      {
+        label: 'New',
+      },
+    ],
+  },
+  {
     label: 'Edit',
     submenu: [
       {
@@ -192,7 +200,7 @@ if (process.platform === 'darwin') {
     ],
   });
   // Edit menu.
-  MenuTemplate[1].submenu.push(
+  MenuTemplate.find(menuItem => menuItem.label === 'Edit').submenu.push(
     {
       type: 'separator',
     },
@@ -209,7 +217,7 @@ if (process.platform === 'darwin') {
     },
   );
   // Window menu.
-  MenuTemplate[4].submenu = [
+  MenuTemplate.find(menuItem => menuItem.role === 'window').submenu = [
     {
       label: 'Close',
       accelerator: 'CmdOrCtrl+W',

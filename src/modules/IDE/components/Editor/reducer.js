@@ -1,39 +1,34 @@
 import { ipcRenderer } from 'electron';
 
-import { CHANGE_THEME, CHANGE_ACTIVE_FILE } from './actions';
+import { CHANGE_THEME, CHANGE_ACTIVE_FILE, NEW_FILE, OPEN_FILE } from './actions';
 
 const initialState = {
   theme: ipcRenderer.sendSync('getTheme'),
-  activeFilePath: '/Desktop/Array-Shift.c',
-  openFiles: [
-    {
-      fileName: 'Array-Shift.c',
-      filePath: '/Desktop/Array-Shift.c',
-      fileContent: `#include <stdio.h>
-
-int main() {
-  printf("Hello World");
-  return 0;
-}
-`,
-    },
-    {
-      fileName: 'Random-Shift.c',
-      filePath: '/Desktop/Ranqdom-Shift.c',
-      fileContent: 'var a\nawd',
-    },
-    {
-      fileName: 'What-Shift.c',
-      filePath: '/Desktop/What-Swhift.c',
-      fileContent: 'var a\nawd',
-    },
-  ],
+  activeFilePath: '',
+  openFiles: [],
 };
 
 const editorReducer = (state = initialState, action) => {
   switch (action.type) {
     case CHANGE_THEME:
       return { ...state, theme: action.theme };
+    case CHANGE_ACTIVE_FILE:
+      return { ...state, activeFilePath: action.filePath };
+    case NEW_FILE:
+      return {
+        ...state,
+        activeFilePath: action.filePath,
+        openFiles: [...state.openFiles, { name: action.fileName, path: action.filePath, doc: 'hello' }],
+      };
+    case OPEN_FILE:
+      return {
+        ...state,
+        activeFilePath: action.filePath,
+        openFiles: [
+          ...state.openFiles,
+          { name: action.fileName, path: action.filePath, doc: action.fileContent },
+        ],
+      };
     default:
       return state;
   }

@@ -24,7 +24,7 @@ class TabsList extends Component {
 
   findTab(filePath) {
     const { fileTabs } = this.props;
-    const tab = fileTabs.find(file => file.filePath === filePath);
+    const tab = fileTabs.find(file => file.path === filePath);
     return {
       tab,
       tabIndex: fileTabs.indexOf(tab),
@@ -32,16 +32,26 @@ class TabsList extends Component {
   }
 
   render() {
-    const { connectDropTarget, fileTabs, doMoveTab } = this.props;
-    const tabs = fileTabs.map(file =>
-      <Tab
-        key={file.filePath}
-        fileName={file.fileName}
-        filePath={file.filePath}
-        findTab={this.findTab}
-        doMoveTab={doMoveTab}
-      />,
-    );
+    const {
+      connectDropTarget,
+      activeFilePath,
+      fileTabs,
+      doMoveTab,
+      doChangeActiveFile,
+    } = this.props;
+    const tabs = fileTabs.map((file) => {
+      const active = file.path === activeFilePath;
+      return (
+        <Tab
+          key={file.path}
+          active={active}
+          file={file}
+          findTab={this.findTab}
+          doMoveTab={doMoveTab}
+          doChangeActiveFile={doChangeActiveFile}
+        />
+      );
+    });
     return connectDropTarget(
       <div className="file-tabs-container CodeMirror">
         <ul>
@@ -55,13 +65,15 @@ class TabsList extends Component {
 
 TabsList.propTypes = {
   connectDropTarget: PropTypes.func.isRequired,
+  activeFilePath: PropTypes.string.isRequired,
   fileTabs: PropTypes.arrayOf(
     PropTypes.shape({
-      fileName: PropTypes.string.isRequired,
-      filePath: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
     }),
   ).isRequired,
   doMoveTab: PropTypes.func.isRequired,
+  doChangeActiveFile: PropTypes.func.isRequired,
 };
 
 export default

@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 
@@ -6,8 +7,8 @@ import ItemTypes from './ItemTypes';
 const tabSource = {
   beginDrag(props) {
     return {
-      filePath: props.filePath,
-      originalIndex: props.findTab(props.filePath).tabIndex,
+      filePath: props.file.path,
+      originalIndex: props.findTab(props.file.path).tabIndex,
     };
   },
 
@@ -28,7 +29,7 @@ const tabTarget = {
 
   hover(props, monitor) {
     const { filePath: draggedFilePath } = monitor.getItem();
-    const { filePath: overFilePath } = props;
+    const { path: overFilePath } = props.file;
 
     if (draggedFilePath !== overFilePath) {
       const { tabIndex: overIndex } = props.findTab(overFilePath);
@@ -50,20 +51,38 @@ function collectTarget(connect) {
   };
 }
 
-const Tab = ({ fileName, connectDragSource, connectDropTarget, isDragging }) => (
-  connectDragSource(connectDropTarget(
-    <li style={{ opacity: isDragging ? 0 : 1 }}>{fileName}</li>,
-  ))
-);
+// It might be better to make this a stateful component
+// to avoid the arrow function in the onClick event
+const Tab = ({
+  connectDragSource,
+  connectDropTarget,
+  isDragging,
+  active,
+  file,
+  doChangeActiveFile,
+}) => connectDragSource(connectDropTarget(
+  <li
+    className={active ? 'active' : ''}
+    style={{ opacity: isDragging ? 0 : 1 }}
+    onClick={() => !active ? doChangeActiveFile(file.path) : ''}
+  >
+    {file.name}
+  </li>,
+  { dropEffect: 'move' },
+));
 
 Tab.propTypes = {
-  fileName: PropTypes.string.isRequired,
-  filePath: PropTypes.string.isRequired,
   connectDragSource: PropTypes.func.isRequired,
   connectDropTarget: PropTypes.func.isRequired,
   isDragging: PropTypes.bool.isRequired,
-  doMoveTab: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  active: PropTypes.bool.isRequired,
+  file: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    path: PropTypes.string.isRequired,
+  }).isRequired,
   findTab: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  doMoveTab: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
+  doChangeActiveFile: PropTypes.func.isRequired,
 };
 
 export default DropTarget(ItemTypes.TAB, tabTarget,

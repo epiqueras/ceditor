@@ -1,7 +1,9 @@
 import { connect } from 'react-redux';
 
-import { changeTheme, changeActiveFile } from './actions';
+import { changeTheme, changeActiveFile, createNewFile, openFile } from './actions';
 import { getTheme, getActiveFilePath, getOpenFiles } from './reducer';
+
+import { addTab } from '../FileTabs/actions';
 
 import TextEditor from './components/TextEditor';
 
@@ -18,6 +20,9 @@ function mapDispatchToProps(dispatch) {
     doChangeTheme: (theme, myCodeMirror, upgradeBackground) =>
       dispatch(changeTheme(theme, myCodeMirror, upgradeBackground)),
     doChangeActiveFile: filePath => dispatch(changeActiveFile(filePath)),
+    doCreateNewFile: (fileName, filePath) => dispatch(createNewFile(fileName, filePath)),
+    doOpenFile: (fileName, filePath) => dispatch(openFile(fileName, filePath)),
+    doAddTab: (fileName, filePath) => dispatch(addTab(fileName, filePath)),
   };
 }
 

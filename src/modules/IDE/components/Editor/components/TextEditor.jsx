@@ -72,19 +72,23 @@ import 'codemirror/addon/wrap/hardwrap';
 export default class TextEditor extends Component {
   constructor(props) {
     super(props);
-    const { doChangeTheme } = this.props;
+    const { openFiles, doChangeTheme } = this.props;
     this.cmContainer = {};
     this.myCodeMirror = {};
-    this.getOpenFile = this.getOpenFile.bind(this);
+    this.setupFileDrop = this.setupFileDrop.bind(this);
     this.setRef = this.setRef.bind(this);
+    this.getOpenFile = this.getOpenFile.bind(this);
+    this.createUntitled = this.createUntitled.bind(this);
     this.updateBackground = this.updateBackground.bind(this);
     ipcRenderer.on('themeChanges', (event, theme) => doChangeTheme(theme, this.myCodeMirror, this.updateBackground));
+    ipcRenderer.on('newFile', () => this.createUntitled());
+    if (openFiles.length === 0) this.createUntitled();
   }
 
   componentDidMount() {
     const { theme } = this.props;
     this.myCodeMirror = CodeMirror(this.cmContainer, {
-      value: this.getOpenFile().fileContent,
+      value: this.getOpenFile() ? this.getOpenFile().doc : '',
       theme,
       mode: 'text/x-csrc',
       indentUnit: 2,
@@ -115,16 +119,54 @@ export default class TextEditor extends Component {
     this.myCodeMirror.setOption('extraKeys', {
       'Ctrl-Space': () => this.myCodeMirror.showHint(),
     });
+    this.setupFileDrop();
     this.updateBackground();
   }
 
-  getOpenFile() {
-    const { openFiles, activeFilePath } = this.props;
-    return openFiles.find(file => file.filePath === activeFilePath);
+  componentDidUpdate(prevProps) {
+    if (prevProps.activeFilePath !== this.props.activeFilePath) {
+      const { doc } = this.getOpenFile();
+      if (doc.cm) this.myCodeMirror.swapDoc(doc);
+      else this.myCodeMirror.setValue(doc);
+    }
+  }
+
+  setupFileDrop() {
+    const { doChangeActiveFile, doOpenFile, doAddTab } = this.props;
+    const fileDrop = document.getElementById('file-drop');
+    fileDrop.ondragover = fileDrop.ondragleave = fileDrop.ondragend = () => false;
+    fileDrop.ondrop = (event) => {
+      event.preventDefault();
+      if (event.dataTransfer.files.length > 0) {
+        const { name, path } = event.dataTransfer.files[0];
+        if (!this.props.openFiles.find(file => file.path === path)) {
+          doOpenFile(name, path);
+          doAddTab(name, path);
+        } else {
+          doChangeActiveFile(path);
+        }
+      }
+      return false;
+    };
   }
 
   setRef(c) {
     this.cmContainer = c;
+  }
+
+  getOpenFile() {
+    const { openFiles, activeFilePath } = this.props;
+    return openFiles.find(file => file.path === activeFilePath);
+  }
+
+  createUntitled() {
+    const { openFiles, doCreateNewFile, doAddTab } = this.props;
+    let untitledNum = openFiles.reduce((count, file) => file.path.slice(0, 11) === '-$untitled-' ? count + 1 : count, 0);
+    untitledNum = untitledNum < 1 ? '' : untitledNum + 1;
+    const fileName = `untitled${untitledNum}`;
+    const filePath = `-$untitled-${untitledNum}`;
+    doCreateNewFile(fileName, filePath);
+    doAddTab(fileName, filePath);
   }
 
   updateBackground() {
@@ -134,7 +176,7 @@ export default class TextEditor extends Component {
 
   render() {
     return (
-      <div className="editor">
+      <div id="file-drop" className="editor">
         <div ref={this.setRef} />
       </div>
     );
@@ -146,11 +188,14 @@ TextEditor.propTypes = {
   activeFilePath: PropTypes.string.isRequired,
   openFiles: PropTypes.arrayOf(
     PropTypes.shape({
-      fileName: PropTypes.string.isRequired,
-      filePath: PropTypes.string.isRequired,
-      fileContent: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+      doc: PropTypes.string.isRequired,
     }),
   ).isRequired,
   doChangeTheme: PropTypes.func.isRequired,
   doChangeActiveFile: PropTypes.func.isRequired,
+  doCreateNewFile: PropTypes.func.isRequired,
+  doOpenFile: PropTypes.func.isRequired,
+  doAddTab: PropTypes.func.isRequired,
 };
