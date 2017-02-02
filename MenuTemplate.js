@@ -170,6 +170,7 @@ const MenuTemplate = [
   },
 ];
 
+// Modify menu for Mac OS
 if (process.platform === 'darwin') {
   MenuTemplate.unshift({
     label: app.getName(),

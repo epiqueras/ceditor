@@ -4,70 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import CodeMirror from 'codemirror';
 import { ipcRenderer } from 'electron';
 
-// Modes
-import 'codemirror/mode/javascript/javascript';
-import 'codemirror/mode/css/css';
-import 'codemirror/mode/htmlmixed/htmlmixed';
-import 'codemirror/mode/jsx/jsx';
-import 'codemirror/mode/php/php';
-import 'codemirror/mode/python/python';
-import 'codemirror/mode/swift/swift';
-import 'codemirror/mode/clike/clike';
-
-// Keymaps
-import 'codemirror/keymap/sublime';
-
-// Addons
-// Dialog
-import 'codemirror/addon/dialog/dialog';
-// Search
-import 'codemirror/addon/search/searchcursor';
-import 'codemirror/addon/search/search';
-import 'codemirror/addon/search/jump-to-line';
-import 'codemirror/addon/search/matchesonscrollbar';
-import 'codemirror/addon/search/match-highlighter';
-// Edit
-import 'codemirror/addon/edit/matchbrackets';
-import 'codemirror/addon/edit/closebrackets';
-import 'codemirror/addon/edit/matchtags';
-import 'codemirror/addon/edit/trailingspace';
-import 'codemirror/addon/edit/closetag';
-// Comment
-import 'codemirror/addon/comment/comment';
-import 'codemirror/addon/comment/continuecomment';
-// Fold
-import 'codemirror/addon/fold/foldcode';
-import 'codemirror/addon/fold/foldgutter';
-import 'codemirror/addon/fold/brace-fold';
-import 'codemirror/addon/fold/comment-fold';
-import 'codemirror/addon/fold/indent-fold';
-import 'codemirror/addon/fold/markdown-fold';
-import 'codemirror/addon/fold/xml-fold';
-// Hint
-import 'codemirror/addon/hint/show-hint';
-import 'codemirror/addon/hint/anyword-hint';
-import 'codemirror/addon/hint/css-hint';
-import 'codemirror/addon/hint/html-hint';
-import 'codemirror/addon/hint/javascript-hint';
-import 'codemirror/addon/hint/sql-hint';
-import 'codemirror/addon/hint/xml-hint';
-// Lint
-import 'codemirror/addon/lint/lint';
-import 'codemirror/addon/lint/coffeescript-lint';
-import 'codemirror/addon/lint/css-lint';
-// import 'codemirror/addon/lint/html-lint';
-import 'codemirror/addon/lint/javascript-lint';
-import 'codemirror/addon/lint/json-lint';
-import 'codemirror/addon/lint/yaml-lint';
-// Selection
-import 'codemirror/addon/selection/mark-selection';
-import 'codemirror/addon/selection/active-line';
-import 'codemirror/addon/selection/selection-pointer';
-// Scroll
-import 'codemirror/addon/scroll/simplescrollbars';
-import 'codemirror/addon/scroll/annotatescrollbar';
-// Wrap
-import 'codemirror/addon/wrap/hardwrap';
+import '../codeMirrorDeps';
 
 export default class TextEditor extends Component {
   constructor(props) {
@@ -80,6 +17,8 @@ export default class TextEditor extends Component {
     this.getOpenFile = this.getOpenFile.bind(this);
     this.createUntitled = this.createUntitled.bind(this);
     this.updateBackground = this.updateBackground.bind(this);
+
+    // Respond to application menu commands
     ipcRenderer.on('themeChanges', (event, theme) => doChangeTheme(theme));
     ipcRenderer.on('newFile', () => this.createUntitled());
     ipcRenderer.on('save', () => {
@@ -87,11 +26,14 @@ export default class TextEditor extends Component {
       if (path.slice(0, 11) !== '-$untitled-') doSetUnsavedChanges(path, false, true, this.myCodeMirror.getValue());
       else console.log('set a file path');
     });
+
+    // Create a new untitled file if no files are open
     if (openFiles.length === 0) this.createUntitled();
   }
 
   componentDidMount() {
     const { theme } = this.props;
+    // Initialize CodeMirror instance
     this.myCodeMirror = CodeMirror(this.cmContainer, {
       value: this.getOpenFile() ? this.getOpenFile().value : '',
       theme,
@@ -120,35 +62,45 @@ export default class TextEditor extends Component {
       continueComments: true,
       scrollbarStyle: 'simple',
     });
+
     const { doSetUnsavedChanges } = this.props;
     this.myCodeMirror.setOption('extraKeys', {
       'Ctrl-Space': () => this.myCodeMirror.showHint(),
     });
+
+    // Set unsaved changes on file tab when changes are made to the document
     this.myCodeMirror.on('changes', () => {
       const { path } = this.getOpenFile();
       const fileTab = this.props.fileTabs.find(tab => tab.path === path);
+      // This will also get called when a new file is created or opened.
+      // So we need to check if the file tab exists before setting the unsaved changes.
+      // Because the file tab is created after the file is opened this stops the event from
+      // setting unsaved changes on opening or creating a file.
       if (fileTab && !fileTab.unsavedChanges) doSetUnsavedChanges(path, true);
     });
-    this.setupFileDrop();
-    this.updateBackground();
+    this.setupFileDrop(); // Sets up drag and dropping files into the editor
+    this.updateBackground(); // Sets the background color to the editor's theme background color
   }
 
   componentDidUpdate(prevProps) {
     const { activeFilePath: prevFilePath, theme: prevTheme } = prevProps;
     const { activeFilePath, openFiles, theme, doStoreDoc } = this.props;
-    if (!activeFilePath) {
+    if (!activeFilePath) { // If all files have been closed, open a new one
       this.createUntitled();
-    } else if (prevFilePath !== activeFilePath) {
+    } else if (prevFilePath !== activeFilePath) { // New file loaded
       const { value, history } = this.getOpenFile();
+      // Store the previous file if it exists
       if (prevFilePath && openFiles.find(file => file.path === prevFilePath)) {
         doStoreDoc(prevFilePath,
           this.myCodeMirror.getValue(), JSON.stringify(this.myCodeMirror.getHistory()));
       }
       this.myCodeMirror.setValue(value);
+      // Set the history if the new file has one, otherwise clear it
       if (history) this.myCodeMirror.setHistory(JSON.parse(history));
       else this.myCodeMirror.clearHistory();
     }
 
+    // Change the theme and update the background if the theme has changed
     if (prevTheme !== theme) {
       this.myCodeMirror.setOption('theme', theme);
       this.updateBackground();
@@ -161,17 +113,18 @@ export default class TextEditor extends Component {
     fileDrop.ondragover = fileDrop.ondragleave = fileDrop.ondragend = () => false;
     fileDrop.ondrop = (event) => {
       event.preventDefault();
-      if (event.dataTransfer.files.length > 0) {
+      if (event.dataTransfer.files.length > 0) { // Check if it's a file
         const { name, path } = event.dataTransfer.files[0];
-        if (!this.props.openFiles.find(file => file.path === path)) {
+        if (!this.props.openFiles.find(file => file.path === path)) { // If it's not open, open it
           doOpenFile(name, path);
           doAddTab(name, path);
-        } else doChangeActiveFile(path);
+        } else doChangeActiveFile(path); // If it's open, switch to it
       }
       return false;
     };
   }
 
+  // Sets the ref to the CodeMirror container
   setRef(c) {
     this.cmContainer = c;
   }
@@ -183,13 +136,15 @@ export default class TextEditor extends Component {
 
   createUntitled() {
     const { openFiles, doCreateNewFile, doSetUnsavedChanges, doAddTab } = this.props;
+    // Generate an untitled name and path depending on how
+    // many untitled files are open to avoid path collisions
     let untitledNum = openFiles.reduce((count, file) => file.path.slice(0, 11) === '-$untitled-' ? count + 1 : count, 0);
     untitledNum = untitledNum < 1 ? '' : untitledNum + 1;
     const fileName = `untitled${untitledNum}`;
     const filePath = `-$untitled-${untitledNum}`;
     doCreateNewFile(fileName, filePath);
     doAddTab(fileName, filePath);
-    doSetUnsavedChanges(filePath, true);
+    doSetUnsavedChanges(filePath, true); // Untitled files are unsaved
   }
 
   updateBackground() {

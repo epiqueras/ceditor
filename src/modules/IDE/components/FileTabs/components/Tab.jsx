@@ -16,7 +16,7 @@ const tabSource = {
     const { filePath: droppedFilePath, originalIndex } = monitor.getItem();
     const didDrop = monitor.didDrop();
 
-    if (!didDrop) {
+    if (!didDrop) { // If the tab was dropped outside the tab list, cancel the move
       props.doMoveTab(droppedFilePath, originalIndex);
     }
   },
@@ -52,7 +52,7 @@ function collectTarget(connect) {
 }
 
 // It might be better to make this a stateful component
-// to avoid the arrow function in the onClick event
+// to avoid the arrow functions in the onClick events
 const Tab = ({
   connectDragSource,
   connectDropTarget,
