@@ -82,7 +82,7 @@ app.on('ready', () => {
   const themeSubmenuItems = menu.items.find(menuItem => menuItem.label === 'Theme').submenu.items;
   themeSubmenuItems.find(subMenuItem => subMenuItem.label === currentTheme).checked = true;
 
-  // Add click events
+  // Add click events for theme submenu
   themeSubmenuItems.forEach((subMenuItem) => {
     // eslint-disable-next-line no-param-reassign
     subMenuItem.click = () => {
@@ -93,9 +93,10 @@ app.on('ready', () => {
     };
   });
 
-  // Handle file creation, opening, and saving
+  // Add click events for file submenu
   const fileSubmenuItems = menu.items.find(menuItem => menuItem.label === 'File').submenu.items;
   fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'New').click = () => mainWindow.webContents.send('newFile');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save').click = () => mainWindow.webContents.send('save');
 
   // Attach menu
   Menu.setApplicationMenu(menu);

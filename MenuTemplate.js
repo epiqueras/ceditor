@@ -7,6 +7,11 @@ const MenuTemplate = [
     submenu: [
       {
         label: 'New',
+        accelerator: 'CommandOrControl+N',
+      },
+      {
+        label: 'Save',
+        accelerator: 'CommandOrControl+S',
       },
     ],
   },

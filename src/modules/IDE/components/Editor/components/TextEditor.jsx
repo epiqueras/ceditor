@@ -72,7 +72,7 @@ import 'codemirror/addon/wrap/hardwrap';
 export default class TextEditor extends Component {
   constructor(props) {
     super(props);
-    const { openFiles, doChangeTheme } = this.props;
+    const { openFiles, doChangeTheme, doSetUnsavedChanges } = this.props;
     this.cmContainer = {};
     this.myCodeMirror = {};
     this.setupFileDrop = this.setupFileDrop.bind(this);
@@ -82,6 +82,11 @@ export default class TextEditor extends Component {
     this.updateBackground = this.updateBackground.bind(this);
     ipcRenderer.on('themeChanges', (event, theme) => doChangeTheme(theme));
     ipcRenderer.on('newFile', () => this.createUntitled());
+    ipcRenderer.on('save', () => {
+      const { path } = this.getOpenFile();
+      if (path.slice(0, 11) !== '-$untitled-') doSetUnsavedChanges(path, false, true, this.myCodeMirror.getValue());
+      else console.log('set a file path');
+    });
     if (openFiles.length === 0) this.createUntitled();
   }
 
@@ -118,11 +123,6 @@ export default class TextEditor extends Component {
     const { doSetUnsavedChanges } = this.props;
     this.myCodeMirror.setOption('extraKeys', {
       'Ctrl-Space': () => this.myCodeMirror.showHint(),
-      'Cmd-S': () => {
-        const { path } = this.getOpenFile();
-        if (path.slice(0, 11) !== '-$untitled-') doSetUnsavedChanges(path, false, true, this.myCodeMirror.getValue());
-        else console.log('set a file path');
-      },
     });
     this.myCodeMirror.on('changes', () => {
       const { path } = this.getOpenFile();
