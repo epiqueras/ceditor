@@ -67,8 +67,13 @@ const Tab = ({
     style={{ opacity: isDragging ? 0 : 1 }}
     onClick={() => !active ? doChangeActiveFile(file.path) : ''}
   >
-    {file.name}
-    <span/>
+    {file.name}{file.unsavedChanges ? '*' : ''}
+    <i
+      className="material-icons close-icon"
+      onClick={() => removeTabAndCloseFile(file.path)}
+    >
+      close
+    </i>
   </li>,
   { dropEffect: 'move' },
 ));
@@ -81,6 +86,7 @@ Tab.propTypes = {
   file: PropTypes.shape({
     name: PropTypes.string.isRequired,
     path: PropTypes.string.isRequired,
+    unsavedChanges: PropTypes.bool.isRequired,
   }).isRequired,
   findTab: PropTypes.func.isRequired, // eslint-disable-line react/no-unused-prop-types
   removeTabAndCloseFile: PropTypes.func.isRequired,

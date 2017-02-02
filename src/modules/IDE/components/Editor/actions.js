@@ -6,6 +6,7 @@ export const NEW_FILE = 'NEW_FILE';
 export const OPEN_FILE = 'OPEN_FILE';
 export const STORE_DOC = 'STORE_DOC';
 export const CLOSE_FILE = 'CLOSE_FILE';
+export const SET_UNSAVED_CHANGES = 'SET_UNSAVED_CHANGES';
 
 export function changeTheme(theme) {
   return {
@@ -52,5 +53,16 @@ export function closeFile(filePath) {
   return {
     type: CLOSE_FILE,
     filePath,
+  };
+}
+
+export function setUnsavedChanges(filePath, unsavedChanges, saveFile = false, data = '') {
+  if (saveFile && data) {
+    fs.writeFileSync(filePath, data, 'utf8');
+  }
+  return {
+    type: SET_UNSAVED_CHANGES,
+    filePath,
+    unsavedChanges,
   };
 }

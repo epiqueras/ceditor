@@ -3,6 +3,9 @@
 @import "./themes/_themes.scss";
 @import "./themes/_themify.scss";
 
+// Icons
+@import "../../node_modules/material-design-icons/iconfont/material-icons.css";
+
 // Base
 @import "./base/_reset.scss";
 @import "./base/_base.scss";

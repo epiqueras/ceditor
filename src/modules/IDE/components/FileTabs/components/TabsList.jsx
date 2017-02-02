@@ -78,6 +78,7 @@ TabsList.propTypes = {
     PropTypes.shape({
       name: PropTypes.string.isRequired,
       path: PropTypes.string.isRequired,
+      unsavedChanges: PropTypes.bool.isRequired,
     }),
   ).isRequired,
   doMoveTab: PropTypes.func.isRequired,

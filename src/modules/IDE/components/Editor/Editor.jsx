@@ -1,9 +1,10 @@
 import { connect } from 'react-redux';
 
-import { changeTheme, changeActiveFile, createNewFile, openFile, storeDoc } from './actions';
+import { changeTheme, changeActiveFile, createNewFile, openFile, storeDoc, setUnsavedChanges } from './actions';
 import { getTheme, getActiveFilePath, getOpenFiles } from './reducer';
 
 import { addTab } from '../FileTabs/actions';
+import { getFileTabs } from '../FileTabs/reducer';
 
 import TextEditor from './components/TextEditor';
 
@@ -12,6 +13,7 @@ function mapStateToProps(state) {
     theme: getTheme(state),
     activeFilePath: getActiveFilePath(state),
     openFiles: getOpenFiles(state),
+    fileTabs: getFileTabs(state),
   };
 }
 
@@ -22,6 +24,8 @@ function mapDispatchToProps(dispatch) {
     doCreateNewFile: (fileName, filePath) => dispatch(createNewFile(fileName, filePath)),
     doOpenFile: (fileName, filePath) => dispatch(openFile(fileName, filePath)),
     doStoreDoc: (filePath, value, history) => dispatch(storeDoc(filePath, value, history)),
+    doSetUnsavedChanges: (filePath, unsavedChanges, saveFile, data) =>
+      dispatch(setUnsavedChanges(filePath, unsavedChanges, saveFile, data)),
     doAddTab: (fileName, filePath) => dispatch(addTab(fileName, filePath)),
   };
 }

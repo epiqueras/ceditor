@@ -7,7 +7,7 @@ const config = {
   entry: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/only-dev-server', './src/index.js'],
 
   output: {
-    filename: 'bundle.js',
+    filename: '[name].js',
     path: path.join(__dirname, '/dist'),
     publicPath: '/',
   },
@@ -29,6 +29,10 @@ const config = {
         loaders: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
+        test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
+        loader: 'file-loader',
+      },
+      {
         enforce: 'pre',
         test: /\.jsx?$/,
         loader: 'eslint-loader',
@@ -45,6 +49,10 @@ const config = {
     }),
     new webpack.HotModuleReplacementPlugin(),
     new StyleLintPlugin(),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: module => module.context && module.context.indexOf('node_modules') !== -1,
+    }),
   ],
 
   eslint: {

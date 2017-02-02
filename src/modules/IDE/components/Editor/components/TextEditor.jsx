@@ -115,9 +115,19 @@ export default class TextEditor extends Component {
       continueComments: true,
       scrollbarStyle: 'simple',
     });
-
+    const { doSetUnsavedChanges } = this.props;
     this.myCodeMirror.setOption('extraKeys', {
       'Ctrl-Space': () => this.myCodeMirror.showHint(),
+      'Cmd-S': () => {
+        const { path } = this.getOpenFile();
+        if (path.slice(0, 11) !== '-$untitled-') doSetUnsavedChanges(path, false, true, this.myCodeMirror.getValue());
+        else console.log('set a file path');
+      },
+    });
+    this.myCodeMirror.on('changes', () => {
+      const { path } = this.getOpenFile();
+      const fileTab = this.props.fileTabs.find(tab => tab.path === path);
+      if (fileTab && !fileTab.unsavedChanges) doSetUnsavedChanges(path, true);
     });
     this.setupFileDrop();
     this.updateBackground();
@@ -125,10 +135,12 @@ export default class TextEditor extends Component {
 
   componentDidUpdate(prevProps) {
     const { activeFilePath: prevFilePath, theme: prevTheme } = prevProps;
-    const { activeFilePath, theme, doStoreDoc } = this.props;
-    if (prevFilePath !== activeFilePath) {
+    const { activeFilePath, openFiles, theme, doStoreDoc } = this.props;
+    if (!activeFilePath) {
+      this.createUntitled();
+    } else if (prevFilePath !== activeFilePath) {
       const { value, history } = this.getOpenFile();
-      if (prevFilePath) {
+      if (prevFilePath && openFiles.find(file => file.path === prevFilePath)) {
         doStoreDoc(prevFilePath,
           this.myCodeMirror.getValue(), JSON.stringify(this.myCodeMirror.getHistory()));
       }
@@ -136,6 +148,7 @@ export default class TextEditor extends Component {
       if (history) this.myCodeMirror.setHistory(JSON.parse(history));
       else this.myCodeMirror.clearHistory();
     }
+
     if (prevTheme !== theme) {
       this.myCodeMirror.setOption('theme', theme);
       this.updateBackground();
@@ -169,13 +182,14 @@ export default class TextEditor extends Component {
   }
 
   createUntitled() {
-    const { openFiles, doCreateNewFile, doAddTab } = this.props;
+    const { openFiles, doCreateNewFile, doSetUnsavedChanges, doAddTab } = this.props;
     let untitledNum = openFiles.reduce((count, file) => file.path.slice(0, 11) === '-$untitled-' ? count + 1 : count, 0);
     untitledNum = untitledNum < 1 ? '' : untitledNum + 1;
     const fileName = `untitled${untitledNum}`;
     const filePath = `-$untitled-${untitledNum}`;
     doCreateNewFile(fileName, filePath);
     doAddTab(fileName, filePath);
+    doSetUnsavedChanges(filePath, true);
   }
 
   updateBackground() {
@@ -203,10 +217,18 @@ TextEditor.propTypes = {
       history: PropTypes.string.isRequired,
     }),
   ).isRequired,
+  fileTabs: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      path: PropTypes.string.isRequired,
+      unsavedChanges: PropTypes.bool.isRequired,
+    }),
+  ).isRequired,
   doChangeTheme: PropTypes.func.isRequired,
   doChangeActiveFile: PropTypes.func.isRequired,
   doCreateNewFile: PropTypes.func.isRequired,
   doOpenFile: PropTypes.func.isRequired,
   doStoreDoc: PropTypes.func.isRequired,
+  doSetUnsavedChanges: PropTypes.func.isRequired,
   doAddTab: PropTypes.func.isRequired,
 };

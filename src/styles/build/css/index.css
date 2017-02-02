@@ -1,3 +1,4 @@
+@import url(../../node_modules/material-design-icons/iconfont/material-icons.css);
 @import url(../../node_modules/codemirror/lib/codemirror.css);
 @import url(../../node_modules/codemirror/addon/dialog/dialog.css);
 @import url(../../node_modules/codemirror/addon/search/matchesonscrollbar.css);
@@ -74,6 +75,8 @@ body {
       color: white;
       background: grey; }
       .default .file-tabs-container li:hover {
+        background: #404040; }
+      .default .file-tabs-container li.active {
         background: #404040; }
 
 .editor {

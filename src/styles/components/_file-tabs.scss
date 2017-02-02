@@ -33,12 +33,23 @@
       margin-right: 10px;
     }
 
+    .close-icon {
+      position: fixed;
+      font-size: 15px;
+      top: 5px;
+      display: none;
+    }
+
     @include themify {
       color: theme(primary-text);
       background: theme(file-tab);
 
       &:hover {
         background: darken(theme(file-tab), 25%);
+
+        .close-icon {
+          display: inline;
+        }
       }
 
       &.active {

@@ -1,6 +1,11 @@
 import { ipcRenderer } from 'electron';
 
-import { CHANGE_THEME, CHANGE_ACTIVE_FILE, NEW_FILE, OPEN_FILE, STORE_DOC } from './actions';
+import { CHANGE_THEME, CHANGE_ACTIVE_FILE, NEW_FILE, OPEN_FILE, STORE_DOC, CLOSE_FILE } from './actions';
+
+function findFileHelper(state, action) {
+  const file = state.openFiles.find(aFile => aFile.path === action.filePath);
+  return { file, fileIndex: state.openFiles.indexOf(file) };
+}
 
 const initialState = {
   theme: ipcRenderer.sendSync('getTheme'),
@@ -18,7 +23,15 @@ const editorReducer = (state = initialState, action) => {
       return {
         ...state,
         activeFilePath: action.filePath,
-        openFiles: [...state.openFiles, { name: action.fileName, path: action.filePath, value: 'hello', history: '' }],
+        openFiles: [
+          ...state.openFiles,
+          {
+            name: action.fileName,
+            path: action.filePath,
+            value: 'hello',
+            history: '',
+          },
+        ],
       };
     case OPEN_FILE:
       return {
@@ -39,8 +52,23 @@ const editorReducer = (state = initialState, action) => {
         ...state,
         openFiles: state.openFiles.map(file =>
           file.path === action.filePath ?
-            { ...file, value: action.value, history: action.history } : file,
+          {
+            ...file,
+            value: action.value,
+            history: action.history,
+          }
+          :
+            file,
         ),
+      };
+    case CLOSE_FILE:
+      return {
+        ...state,
+        activeFilePath: state.openFiles.length < 2 ? '' : state.openFiles.find(file => file.path !== action.filePath).path,
+        openFiles: [
+          ...state.openFiles.slice(0, findFileHelper(state, action).fileIndex),
+          ...state.openFiles.slice(findFileHelper(state, action).fileIndex + 1),
+        ],
       };
     default:
       return state;
