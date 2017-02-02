@@ -1,7 +1,7 @@
 # Ceditor
 ###### An easy to use desktop text editor built using Electron, React, Redux, and CodeMirror
 <br/>
-![Ceditor Screenshot](/screenshots/screenshot-1?raw=true "Ceditor Screenshot")
+![Ceditor Screenshot](/screenshots/screenshot-1.png?raw=true "Ceditor Screenshot")
 <br/>
 #### Features (Work in Progress):
 - **Basic Editor Functionality** *(Tabs, Opening, Saving)* [x]
