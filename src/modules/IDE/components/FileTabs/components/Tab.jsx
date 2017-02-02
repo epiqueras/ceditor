@@ -70,7 +70,7 @@ const Tab = ({
     {file.name}{file.unsavedChanges ? '*' : ''}
     <i
       className="material-icons close-icon"
-      onClick={() => removeTabAndCloseFile(file.path)}
+      onClick={(event) => { event.stopPropagation(); removeTabAndCloseFile(file.path); }}
     >
       close
     </i>
