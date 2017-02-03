@@ -1,10 +1,12 @@
 const webpack = require('webpack');
 const path = require('path');
-const webpackTargetElectronRenderer = require('webpack-target-electron-renderer');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 
 const config = {
   entry: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/only-dev-server', './src/index.js'],
+  devtool: 'cheap-eval-source-map',
+
+  target: 'electron-renderer',
 
   output: {
     filename: '[name].js',
@@ -13,20 +15,20 @@ const config = {
   },
 
   resolve: {
-    extensions: ['', '.js', '.jsx'],
+    extensions: ['*', '.js', '.jsx'],
   },
 
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loaders: ['react-hot', 'babel-loader'],
+        use: ['react-hot-loader', 'babel-loader'],
       },
       {
         test: /\.scss$/,
-        exclude: /node_modules(?!\/highlight.js)(?!\/fullpage.js)/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader'],
+        exclude: /node_modules/,
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       },
       {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
@@ -35,8 +37,9 @@ const config = {
       {
         enforce: 'pre',
         test: /\.jsx?$/,
-        loader: 'eslint-loader',
         exclude: /node_modules/,
+        loader: 'eslint-loader',
+        options: { configFile: './.eslintrc' },
       },
     ],
   },
@@ -54,11 +57,6 @@ const config = {
       minChunks: module => module.context && module.context.indexOf('node_modules') !== -1,
     }),
   ],
-
-  eslint: {
-    configFile: './.eslintrc',
-  },
 };
 
-config.target = webpackTargetElectronRenderer(config);
 module.exports = config;

@@ -2,9 +2,12 @@
 /* global document */
 import React, { Component, PropTypes } from 'react';
 import CodeMirror from 'codemirror';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 
 import '../codeMirrorDeps';
+
+const { dialog } = remote;
+console.log(dialog.showSaveDialog({ title: 'Save As' }));
 
 export default class TextEditor extends Component {
   constructor(props) {

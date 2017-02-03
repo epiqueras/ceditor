@@ -13,6 +13,10 @@ const MenuTemplate = [
         label: 'Save',
         accelerator: 'CommandOrControl+S',
       },
+      {
+        label: 'Save As',
+        accelerator: 'CommandOrControl+Shift+S',
+      },
     ],
   },
   {
