@@ -3,27 +3,35 @@ const path = require('path');
 const StyleLintPlugin = require('stylelint-webpack-plugin');
 
 const config = {
-  entry: ['webpack-dev-server/client?http://localhost:8080', 'webpack/hot/only-dev-server', './src/index.js'],
-  devtool: 'cheap-eval-source-map',
+  entry: [
+    'react-hot-loader/patch',
+    'webpack-dev-server/client?http://localhost:8080',
+    'webpack/hot/only-dev-server',
+    './src/index.js',
+  ],
 
   target: 'electron-renderer',
-
   output: {
     filename: '[name].js',
-    path: path.join(__dirname, '/dist'),
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/',
+  },
+
+  devtool: 'inline-source-map',
+  devServer: {
+    hot: true,
     publicPath: '/',
   },
 
   resolve: {
     extensions: ['*', '.js', '.jsx'],
   },
-
   module: {
     rules: [
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: ['react-hot-loader', 'babel-loader'],
+        use: ['babel-loader'],
       },
       {
         test: /\.scss$/,
@@ -51,6 +59,7 @@ const config = {
       },
     }),
     new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
     new StyleLintPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
