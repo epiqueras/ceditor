@@ -71,11 +71,18 @@ body {
     -webkit-user-select: none; }
     .file-tabs-container li:last-child {
       margin-right: 10px; }
+    .file-tabs-container li .close-icon {
+      position: fixed;
+      font-size: 15px;
+      top: 5px;
+      display: none; }
     .default .file-tabs-container li {
       color: white;
       background: grey; }
       .default .file-tabs-container li:hover {
         background: #404040; }
+        .default .file-tabs-container li:hover .close-icon {
+          display: inline; }
       .default .file-tabs-container li.active {
         background: #404040; }
 

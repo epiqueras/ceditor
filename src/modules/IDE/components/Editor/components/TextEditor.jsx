@@ -190,6 +190,7 @@ export default class TextEditor extends Component {
   updateBackground() {
     const { backgroundColor } = window.getComputedStyle(this.cmContainer.firstChild);
     document.getElementsByClassName('file-tabs-container CodeMirror')[0].style.backgroundColor = backgroundColor;
+    document.body.style.backgroundColor = backgroundColor;
   }
 
   detectMode() {

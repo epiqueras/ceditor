@@ -1,0 +1,42 @@
+.repl-container {
+  position: fixed;
+  z-index: 200;
+  width: 100vw;
+  height: 100vh;
+
+  button {
+    position: fixed;
+    z-index: 200;
+    top: 20px;
+    right: 0;
+    width: 10vw;
+    margin-right: 1vw;
+    border-radius: 10px;
+    outline: none;
+
+    &.hide {
+      display: none;
+    }
+
+    @include themify {
+      color: theme(primary-text);
+      background: theme(file-tab);
+
+      &:hover {
+        background: darken(theme(file-tab), 25%);
+      }
+    }
+  }
+
+  .repl-overlay {
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    opacity: 0.8;
+
+    &.hide {
+      display: none;
+    }
+  }
+}

@@ -65,7 +65,6 @@ class TabsList extends Component {
         <ul>
           {tabs}
         </ul>
-        <button>Run</button>
       </div>,
     );
   }
