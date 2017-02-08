@@ -7,6 +7,7 @@ export const OPEN_FILE = 'OPEN_FILE';
 export const STORE_DOC = 'STORE_DOC';
 export const CLOSE_FILE = 'CLOSE_FILE';
 export const SET_UNSAVED_CHANGES = 'SET_UNSAVED_CHANGES';
+export const SAVE_AS = 'SAVE_AS';
 
 export function changeTheme(theme) {
   return {
@@ -64,5 +65,16 @@ export function setUnsavedChanges(filePath, unsavedChanges, saveFile = false, da
     type: SET_UNSAVED_CHANGES,
     filePath,
     unsavedChanges,
+  };
+}
+
+export function saveAs(prevFilePath, filePath, data = '') {
+  fs.writeFileSync(filePath, data);
+  const fileName = filePath.slice(filePath.lastIndexOf('/') + 1);
+  return {
+    type: SAVE_AS,
+    fileName,
+    prevFilePath,
+    filePath,
   };
 }

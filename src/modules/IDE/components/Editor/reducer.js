@@ -1,6 +1,6 @@
 import { ipcRenderer } from 'electron';
 
-import { CHANGE_THEME, CHANGE_ACTIVE_FILE, NEW_FILE, OPEN_FILE, STORE_DOC, CLOSE_FILE } from './actions';
+import { CHANGE_THEME, CHANGE_ACTIVE_FILE, NEW_FILE, OPEN_FILE, STORE_DOC, CLOSE_FILE, SAVE_AS } from './actions';
 
 function findFileHelper(state, action) {
   const file = state.openFiles.find(aFile => aFile.path === action.filePath);
@@ -69,6 +69,20 @@ const editorReducer = (state = initialState, action) => {
           ...state.openFiles.slice(0, findFileHelper(state, action).fileIndex),
           ...state.openFiles.slice(findFileHelper(state, action).fileIndex + 1),
         ],
+      };
+    case SAVE_AS:
+      return {
+        ...state,
+        activeFilePath: action.filePath,
+        openFiles: state.openFiles.map(file => file.path === action.prevFilePath ?
+        {
+          ...file,
+          name: action.fileName,
+          path: action.filePath,
+        }
+        :
+          file,
+        ),
       };
     default:
       return state;

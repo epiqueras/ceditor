@@ -40,7 +40,7 @@ const config = {
       },
       {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
-        loader: 'file-loader',
+        use: ['file-loader'],
       },
       {
         enforce: 'pre',

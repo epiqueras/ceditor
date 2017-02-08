@@ -95,7 +95,8 @@ app.on('ready', () => {
 
   // Add click events for file submenu
   const fileSubmenuItems = menu.items.find(menuItem => menuItem.label === 'File').submenu.items;
-  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'New').click = () => mainWindow.webContents.send('newFile');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'New File').click = () => mainWindow.webContents.send('newFile');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Open File').click = () => mainWindow.webContents.send('openFile');
   fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save').click = () => mainWindow.webContents.send('save');
   fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save As').click = () => mainWindow.webContents.send('saveAs');
 

@@ -7,12 +7,10 @@ import { ipcRenderer, remote } from 'electron';
 import '../codeMirrorDeps';
 
 const { dialog } = remote;
-console.log(dialog.showSaveDialog({ title: 'Save As' }));
 
 export default class TextEditor extends Component {
   constructor(props) {
     super(props);
-    const { openFiles, doChangeTheme, doSetUnsavedChanges } = this.props;
     this.cmContainer = {};
     this.myCodeMirror = {};
     this.setupFileDrop = this.setupFileDrop.bind(this);
@@ -20,14 +18,51 @@ export default class TextEditor extends Component {
     this.getOpenFile = this.getOpenFile.bind(this);
     this.createUntitled = this.createUntitled.bind(this);
     this.updateBackground = this.updateBackground.bind(this);
-
+    this.detectMode = this.detectMode.bind(this);
+    const {
+      openFiles,
+      doChangeTheme,
+      doSetUnsavedChanges,
+      doSaveAs,
+      doChangeActiveFile,
+      doOpenFile,
+      doStoreDoc,
+      doAddTab,
+    } = this.props;
     // Respond to application menu commands
     ipcRenderer.on('themeChanges', (event, theme) => doChangeTheme(theme));
     ipcRenderer.on('newFile', () => this.createUntitled());
+    ipcRenderer.on('openFile', () => {
+      const openFilePaths = dialog.showOpenDialog({ title: 'Open File', properties: ['openFile', 'createDirectory'] });
+      if (openFilePaths && openFilePaths.length === 1) {
+        const path = openFilePaths[0];
+        const name = path.slice(path.lastIndexOf('/') + 1);
+        if (!this.props.openFiles.find(file => file.path === path)) { // If it's not open, open it
+          doOpenFile(name, path);
+          doAddTab(name, path);
+        } else doChangeActiveFile(path); // If it's open, switch to it
+      }
+    });
     ipcRenderer.on('save', () => {
       const { path } = this.getOpenFile();
       if (path.slice(0, 11) !== '-$untitled-') doSetUnsavedChanges(path, false, true, this.myCodeMirror.getValue());
-      else console.log('set a file path');
+      else {
+        const openFilePath = dialog.showSaveDialog({ title: 'Save As' });
+        if (openFilePath) {
+          const value = this.myCodeMirror.getValue();
+          doStoreDoc(path, value, JSON.stringify(this.myCodeMirror.getHistory()));
+          doSaveAs(path, openFilePath, value);
+        }
+      }
+    });
+    ipcRenderer.on('saveAs', () => {
+      const openFilePath = dialog.showSaveDialog({ title: 'Save As' });
+      if (openFilePath) {
+        const { path } = this.getOpenFile();
+        const value = this.myCodeMirror.getValue();
+        doStoreDoc(path, value, JSON.stringify(this.myCodeMirror.getHistory()));
+        doSaveAs(path, openFilePath, value);
+      }
     });
 
     // Create a new untitled file if no files are open
@@ -40,7 +75,7 @@ export default class TextEditor extends Component {
     this.myCodeMirror = CodeMirror(this.cmContainer, {
       value: this.getOpenFile() ? this.getOpenFile().value : '',
       theme,
-      mode: 'text/x-csrc',
+      mode: 'text/x-textile',
       indentUnit: 2,
       smartIndent: true,
       tabSize: 2,
@@ -101,6 +136,8 @@ export default class TextEditor extends Component {
       // Set the history if the new file has one, otherwise clear it
       if (history) this.myCodeMirror.setHistory(JSON.parse(history));
       else this.myCodeMirror.clearHistory();
+
+      this.detectMode();
     }
 
     // Change the theme and update the background if the theme has changed
@@ -155,6 +192,38 @@ export default class TextEditor extends Component {
     document.getElementsByClassName('file-tabs-container CodeMirror')[0].style.backgroundColor = backgroundColor;
   }
 
+  detectMode() {
+    const { path } = this.getOpenFile();
+    const fileExt = path.slice(path.lastIndexOf('.'));
+    if (fileExt) {
+      switch (fileExt) {
+        case '.js':
+          this.myCodeMirror.setOption('mode', 'text/javascript');
+          break;
+        case '.c':
+          this.myCodeMirror.setOption('mode', 'text/x-csrc');
+          break;
+        case '.cpp':
+          this.myCodeMirror.setOption('mode', 'text/x-c++src');
+          break;
+        case '.java':
+          this.myCodeMirror.setOption('mode', 'text/x-java');
+          break;
+        case '.cs':
+          this.myCodeMirror.setOption('mode', 'text/x-csharp');
+          break;
+        case '.m':
+          this.myCodeMirror.setOption('mode', 'text/x-objectivec');
+          break;
+        case '.py':
+          this.myCodeMirror.setOption('mode', 'text/x-python');
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   render() {
     return (
       <div id="file-drop" className="editor">
@@ -188,5 +257,6 @@ TextEditor.propTypes = {
   doOpenFile: PropTypes.func.isRequired,
   doStoreDoc: PropTypes.func.isRequired,
   doSetUnsavedChanges: PropTypes.func.isRequired,
+  doSaveAs: PropTypes.func.isRequired,
   doAddTab: PropTypes.func.isRequired,
 };

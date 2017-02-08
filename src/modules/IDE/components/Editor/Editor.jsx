@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import { changeTheme, changeActiveFile, createNewFile, openFile, storeDoc, setUnsavedChanges } from './actions';
+import { changeTheme, changeActiveFile, createNewFile, openFile, storeDoc, setUnsavedChanges, saveAs } from './actions';
 import { getTheme, getActiveFilePath, getOpenFiles } from './reducer';
 
 import { addTab } from '../FileTabs/actions';
@@ -26,6 +26,7 @@ function mapDispatchToProps(dispatch) {
     doStoreDoc: (filePath, value, history) => dispatch(storeDoc(filePath, value, history)),
     doSetUnsavedChanges: (filePath, unsavedChanges, saveFile, data) =>
       dispatch(setUnsavedChanges(filePath, unsavedChanges, saveFile, data)),
+    doSaveAs: (prevFilePath, filePath, data) => dispatch(saveAs(prevFilePath, filePath, data)),
     doAddTab: (fileName, filePath) => dispatch(addTab(fileName, filePath)),
   };
 }

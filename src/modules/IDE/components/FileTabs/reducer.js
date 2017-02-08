@@ -2,7 +2,7 @@ import update from 'react/lib/update';
 
 import { MOVE_TAB, ADD_TAB, REMOVE_TAB } from './actions';
 
-import { SET_UNSAVED_CHANGES } from '../Editor/actions';
+import { SET_UNSAVED_CHANGES, SAVE_AS } from '../Editor/actions';
 
 function findTabHelper(state, action) {
   const tab = state.fileTabs.find(fileTab => fileTab.path === action.filePath);
@@ -43,13 +43,27 @@ const fileTabsReducer = (state = initialState, action) => {
     case SET_UNSAVED_CHANGES:
       return {
         ...state,
-        fileTabs: state.fileTabs.map(file => file.path === action.filePath ?
+        fileTabs: state.fileTabs.map(fileTab => fileTab.path === action.filePath ?
         {
-          ...file,
+          ...fileTab,
           unsavedChanges: action.unsavedChanges,
         }
         :
-          file,
+          fileTab,
+        ),
+      };
+    case SAVE_AS:
+      return {
+        ...state,
+        fileTabs: state.fileTabs.map(fileTab => fileTab.path === action.prevFilePath ?
+        {
+          ...fileTab,
+          name: action.fileName,
+          path: action.filePath,
+          unsavedChanges: false,
+        }
+        :
+          fileTab,
         ),
       };
     default:

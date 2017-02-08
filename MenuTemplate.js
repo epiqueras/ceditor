@@ -6,8 +6,12 @@ const MenuTemplate = [
     label: 'File',
     submenu: [
       {
-        label: 'New',
+        label: 'New File',
         accelerator: 'CommandOrControl+N',
+      },
+      {
+        label: 'Open File',
+        accelerator: 'CommandOrControl+O',
       },
       {
         label: 'Save',
