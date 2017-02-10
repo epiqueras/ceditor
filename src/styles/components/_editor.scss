@@ -13,7 +13,7 @@
 
 .cm-matchhighlight {
   @include themify {
-    background: theme(match-highlight);
+    background: rgba(theme(match-highlight), 0.5);
   }
 }
 

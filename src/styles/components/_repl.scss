@@ -3,8 +3,9 @@
   z-index: 200;
   width: 100vw;
   height: 100vh;
+  pointer-events: none;
 
-  button {
+  .run-stop {
     position: fixed;
     z-index: 200;
     top: 20px;
@@ -13,6 +14,8 @@
     margin-right: 1vw;
     border-radius: 10px;
     outline: none;
+    cursor: pointer;
+    pointer-events: auto;
 
     &.hide {
       display: none;
@@ -34,9 +37,76 @@
     height: 100vh;
     background: black;
     opacity: 0.8;
+    padding: 50px;
+    pointer-events: auto;
+    box-sizing: border-box;
 
     &.hide {
       display: none;
+      pointer-events: none;
+    }
+
+    .output {
+      z-index: 200;
+      color: white;
+      font-family: monospace;
+      width: 100%;
+      height: 100%;
+    }
+
+    .input {
+      outline: none;
+    }
+  }
+
+  .modal {
+    position: fixed;
+    left: 50%;
+    top: 35%;
+    transform: translate(-50%, -50%);
+    border-radius: 10px;
+    padding: 15px;
+    pointer-events: auto;
+
+    &.hide {
+      display: none;
+      pointer-events: none;
+    }
+
+    div:first-child {
+      color: white;
+      font-family: sans-serif;
+      font-size: 0.95rem;
+      margin-bottom: 10px;
+    }
+
+    button {
+      float: right;
+      border-radius: 10px;
+      padding: 5px;
+      cursor: pointer;
+
+      @include themify {
+        color: theme(primary-text);
+        background: theme(file-tab);
+
+        &:hover {
+          background: darken(theme(file-tab), 25%);
+        }
+      }
+    }
+
+    input {
+      color: white;
+
+      @include themify {
+        background: theme(file-tab);
+        border-color: theme(file-tab);
+      }
+    }
+
+    @include themify {
+      background: theme(file-tab);
     }
   }
 }
