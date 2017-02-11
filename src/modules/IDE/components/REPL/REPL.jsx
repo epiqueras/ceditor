@@ -1,6 +1,6 @@
 import { connect } from 'react-redux';
 
-import { openREPL, closeREPL, openModal, closeModal, setCommand } from './actions';
+import { openREPL, closeREPL, openModal, closeModal, setCommands } from './actions';
 import { getREPLIsOpen, getModalIsOpen, getCommands } from './reducer';
 
 import { getActiveFilePath } from '../Editor/reducer';
@@ -22,7 +22,7 @@ function mapDispatchToProps(dispatch) {
     doCloseREPL: () => dispatch(closeREPL()),
     doOpenModal: () => dispatch(openModal()),
     doCloseModal: () => dispatch(closeModal()),
-    doSetCommand: (commandType, command) => dispatch(setCommand(commandType, command)),
+    doSetCommands: (commandType, command) => dispatch(setCommands(commandType, command)),
   };
 }
 

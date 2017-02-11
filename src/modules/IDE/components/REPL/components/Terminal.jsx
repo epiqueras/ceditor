@@ -5,22 +5,20 @@ import React, { Component, PropTypes } from 'react';
 import { remote } from 'electron';
 
 import runChildProcess, { appendOutput } from './childProcesses';
+import SettingsModal from './SettingsModal';
 
 const { dialog } = remote;
 
 export default class Terminal extends Component {
   constructor(props) {
     super(props);
-    this.state = { modalValue: '' };
     this.inputRef = {};
     this.cp = false;
     this.setCaretToEnd = this.setCaretToEnd.bind(this);
     this.setInputRef = this.setInputRef.bind(this);
     this.setOutputRef = this.setOutputRef.bind(this);
-    this.setCommand = this.setCommand.bind(this);
     this.openREPL = this.openREPL.bind(this);
     this.closeREPL = this.closeREPL.bind(this);
-    this.handleModalChange = this.handleModalChange.bind(this);
     this.toStdin = this.toStdin.bind(this);
   }
 
@@ -47,13 +45,6 @@ export default class Terminal extends Component {
 
   setOutputRef(element) {
     this.outputRef = element;
-  }
-
-  setCommand(event) {
-    event.preventDefault();
-    const { activeFilePath, doCloseModal, doSetCommand } = this.props;
-    doSetCommand(activeFilePath.slice(activeFilePath.lastIndexOf('.') + 1), this.state.modalValue);
-    doCloseModal();
   }
 
   openREPL() {
@@ -97,10 +88,6 @@ export default class Terminal extends Component {
     this.outputRef.appendChild(this.inputRef);
   }
 
-  handleModalChange(event) {
-    this.setState({ modalValue: event.target.value });
-  }
-
   toStdin(event) {
     if (event.keyCode === 13) {
       appendOutput(`${this.inputRef.textContent}\n`, this.outputRef, this.inputRef);
@@ -114,8 +101,7 @@ export default class Terminal extends Component {
   }
 
   render() {
-    const { modalValue } = this.state;
-    const { REPLIsOpen, modalIsOpen, doCloseModal } = this.props;
+    const { REPLIsOpen, modalIsOpen, commands, doCloseModal, doSetCommands } = this.props;
     return (
       <div className="repl-container">
         <button onClick={this.openREPL} className={`run-stop${REPLIsOpen ? ' hide' : ''}`}><i className="material-icons">play_circle_outline</i></button>
@@ -131,16 +117,11 @@ export default class Terminal extends Component {
           </div>
         </div>
         <div className={`modal${modalIsOpen ? '' : ' hide'}`}>
-          <div>Enter the command you use to compile/run this type of file and press enter.</div>
-          <form onSubmit={this.setCommand}>
-            <input
-              placeholder="command"
-              type="text"
-              value={modalValue}
-              onChange={this.handleModalChange}
-            />
-            <button onClick={doCloseModal}>Cancel</button>
-          </form>
+          <SettingsModal
+            commands={commands}
+            doCloseModal={doCloseModal}
+            doSetCommands={doSetCommands}
+          />
         </div>
       </div>
     );
@@ -152,11 +133,14 @@ Terminal.propTypes = {
   modalIsOpen: PropTypes.bool.isRequired,
   commands: PropTypes.shape({
     c: PropTypes.string.isRequired,
+    cpp: PropTypes.string.isRequired,
+    java: PropTypes.string.isRequired,
+    python: PropTypes.string.isRequired,
   }).isRequired,
   activeFilePath: PropTypes.string.isRequired,
   doOpenREPL: PropTypes.func.isRequired,
   doCloseREPL: PropTypes.func.isRequired,
   doOpenModal: PropTypes.func.isRequired,
   doCloseModal: PropTypes.func.isRequired,
-  doSetCommand: PropTypes.func.isRequired,
+  doSetCommands: PropTypes.func.isRequired,
 };

@@ -4,6 +4,7 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none;
+  font-family: monospace, sans-serif;
 
   .run-stop {
     position: fixed;
@@ -65,7 +66,7 @@
     top: 35%;
     transform: translate(-50%, -50%);
     border-radius: 10px;
-    padding: 15px;
+    padding: 15px 15px 5px;
     pointer-events: auto;
 
     &.hide {
@@ -75,16 +76,15 @@
 
     div:first-child {
       color: white;
-      font-family: sans-serif;
       font-size: 0.95rem;
       margin-bottom: 10px;
     }
 
     button {
-      float: right;
       border-radius: 10px;
       padding: 5px;
       cursor: pointer;
+      outline: none;
 
       @include themify {
         color: theme(primary-text);
@@ -96,8 +96,19 @@
       }
     }
 
+    button:first-child {
+      float: left;
+    }
+
+    button:last-child {
+      float: right;
+    }
+
     input {
       color: white;
+      width: 100%;
+      margin-bottom: 15px;
+      outline: none;
 
       @include themify {
         background: theme(file-tab);

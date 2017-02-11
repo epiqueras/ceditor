@@ -8,11 +8,14 @@ import Config from 'electron-config';
 
 import MenuTemplate from './MenuTemplate';
 
-// Set the default theme
+// Set the default theme and commands
 const Menu = electron.Menu;
 const config = new Config();
 if (!config.get('theme')) {
   config.set('theme', 'material');
+}
+if (!config.get('commands')) {
+  config.set('commands', { c: '', cpp: '', java: '', python: '' });
 }
 
 // Module to control application life
@@ -23,6 +26,8 @@ const BrowserWindow = electron.BrowserWindow;
 // Respond to config requests
 // eslint-disable-next-line no-return-assign
 ipcMain.on('getTheme', event => event.returnValue = config.get('theme')); // eslint-disable-line no-param-reassign
+// eslint-disable-next-line no-return-assign
+ipcMain.on('getCommands', event => event.returnValue = config.get('commands')); // eslint-disable-line no-param-reassign
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected
@@ -75,6 +80,13 @@ app.on('ready', () => {
     .then(name => console.log(`Added Extension: ${name}`))
     .catch(err => console.error('An error occurred: ', err));
   }
+
+  // Set commands and update other windows
+  ipcMain.on('setCommands', (event, commands) => {
+    config.set('commands', commands);
+    mainWindow.webContents.send('commandsChanges', commands);
+    event.returnValue = true; // eslint-disable-line no-param-reassign
+  });
 
   // Get and set current theme
   const currentTheme = config.get('theme');

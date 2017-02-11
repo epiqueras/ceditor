@@ -1,8 +1,9 @@
+/* global document */
 export const OPEN_REPL = 'OPEN_REPL';
 export const CLOSE_REPL = 'CLOSE_REPL';
 export const OPEN_MODAL = 'OPEN_MODAL';
 export const CLOSE_MODAL = 'CLOSE_MODAL';
-export const SET_COMMAND = 'SET_COMMAND';
+export const SET_COMMANDS = 'SET_COMMANDS';
 
 export function openREPL() {
   return {
@@ -17,21 +18,22 @@ export function closeREPL() {
 }
 
 export function openModal() {
+  document.body.style.pointerEvents = 'none';
   return {
     type: OPEN_MODAL,
   };
 }
 
 export function closeModal() {
+  document.body.style.pointerEvents = 'auto';
   return {
     type: CLOSE_MODAL,
   };
 }
 
-export function setCommand(commandType, command) {
+export function setCommands(commandsState) {
   return {
-    type: SET_COMMAND,
-    commandType,
-    command,
+    type: SET_COMMANDS,
+    commandsState,
   };
 }
