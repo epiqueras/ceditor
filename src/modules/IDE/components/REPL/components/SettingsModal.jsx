@@ -6,12 +6,17 @@ export default class SettingsModal extends Component {
     super(props);
     const { commands, doSetCommands } = this.props;
     this.state = { ...commands };
+    this.handleJSChange = this.handleJSChange.bind(this);
     this.handleCChange = this.handleCChange.bind(this);
     this.handleCPPChange = this.handleCPPChange.bind(this);
     this.handleJavaChange = this.handleJavaChange.bind(this);
     this.handlePythonChange = this.handlePythonChange.bind(this);
     this.saveChanges = this.saveChanges.bind(this);
     ipcRenderer.on('commandsChanges', (event, newCommands) => { doSetCommands(newCommands); this.setState(newCommands); });
+  }
+
+  handleJSChange(event) {
+    this.setState({ js: event.target.value });
   }
 
   handleCChange(event) {
@@ -39,12 +44,22 @@ export default class SettingsModal extends Component {
   }
 
   render() {
-    const { c, cpp, java, python } = this.state; // eslint-disable-line
+    const { js, c, cpp, java, python } = this.state;
     const { doCloseModal } = this.props;
     return (
       <div>
         <div>Build Commands:</div>
         <form onSubmit={this.saveChanges}>
+          <label htmlFor="js">
+            Javascript:
+            <input
+              id="js"
+              placeholder="e.g. node"
+              type="text"
+              value={js}
+              onChange={this.handleJSChange}
+            />
+          </label>
           <label htmlFor="c">
             C:
             <input
@@ -69,7 +84,7 @@ export default class SettingsModal extends Component {
             Java:
             <input
               id="java"
-              placeholder="e.g. java"
+              placeholder="e.g. javac"
               type="text"
               value={java}
               onChange={this.handleJavaChange}
@@ -95,6 +110,7 @@ export default class SettingsModal extends Component {
 
 SettingsModal.propTypes = {
   commands: PropTypes.shape({
+    js: PropTypes.string.isRequired,
     c: PropTypes.string.isRequired,
     cpp: PropTypes.string.isRequired,
     java: PropTypes.string.isRequired,

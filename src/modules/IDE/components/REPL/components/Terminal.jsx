@@ -49,19 +49,47 @@ export default class Terminal extends Component {
 
   openREPL() {
     const { activeFilePath, commands, doOpenREPL, doOpenModal } = this.props;
+    const currentDirectory = activeFilePath.slice(0, activeFilePath.lastIndexOf('/') + 1);
     const fileName = activeFilePath.slice(activeFilePath.lastIndexOf('/') + 1);
     const cleanFileName = fileName.slice(0, fileName.lastIndexOf('.'));
     const fileExt = fileName.slice(fileName.lastIndexOf('.'));
     const command = { cmd: '', args: [], compileCmd: '', compileArgs: [], cwd: '', message: '' };
 
     switch (fileExt) {
+      case '.js':
+        if (!commands.js) return doOpenModal();
+        command.cmd = `${activeFilePath}`;
+        command.message = 'node process\n\n';
+        break;
       case '.c':
         if (!commands.c) return doOpenModal();
         command.compileCmd = commands.c;
         command.compileArgs = ['-o', `${cleanFileName}.o`, fileName];
-        command.cmd = `${activeFilePath.slice(0, activeFilePath.lastIndexOf('.'))}.o`;
-        command.cwd = activeFilePath.slice(0, activeFilePath.lastIndexOf('/'));
-        command.message = "If you're having trouble with output buffering, copy this above your main function:\nsetvbuf(stdout, NULL, _IONBF, 0);\n\n";
+        command.cmd = `${currentDirectory}${cleanFileName}.o`;
+        command.cwd = currentDirectory;
+        command.message = "C: If you're having trouble with output buffering, copy this above your main function:\nsetvbuf(stdout, NULL, _IONBF, 0);\n\n";
+        break;
+      case '.cpp':
+        if (!commands.cpp) return doOpenModal();
+        command.compileCmd = commands.cpp;
+        command.compileArgs = ['-o', `${cleanFileName}.o`, fileName];
+        command.cmd = `${currentDirectory}${cleanFileName}.o`;
+        command.cwd = currentDirectory;
+        command.message = "C++: If you're having trouble with output buffering, copy this above your main function:\nsetvbuf(stdout, NULL, _IONBF, 0);\n\n";
+        break;
+      case '.java':
+        if (!commands.java) return doOpenModal();
+        command.compileCmd = commands.java;
+        command.compileArgs = [fileName];
+        command.cmd = 'java';
+        command.args = [cleanFileName];
+        command.cwd = currentDirectory;
+        command.message = 'java\n\n';
+        break;
+      case '.py':
+        command.cmd = 'python';
+        command.args = ['-u', activeFilePath];
+        command.message = 'python\n\n';
         break;
       default:
         return dialog.showMessageBox({ message: 'Unsupported file type.' });
@@ -71,8 +99,9 @@ export default class Terminal extends Component {
     this.outputRef.appendChild(this.inputRef);
     doOpenREPL();
     this.cp = runChildProcess(command, this.outputRef, this.inputRef);
+    if (!this.cp.on) return dialog.showMessageBox({ message: 'Could not find compiler/build tool for this file type in path.' });
     this.cp.on('close', (code) => {
-      appendOutput(`child process exited with code ${code}\n`, this.outputRef, this.inputRef);
+      appendOutput(`\nchild process exited with code ${code}\n`, this.outputRef, this.inputRef);
       this.cp = false;
     });
     return null;
@@ -101,9 +130,19 @@ export default class Terminal extends Component {
   }
 
   render() {
-    const { REPLIsOpen, modalIsOpen, commands, doCloseModal, doSetCommands } = this.props;
+    const {
+      REPLIsOpen,
+      modalIsOpen,
+      commands,
+      doOpenModal,
+      doCloseModal,
+      doSetCommands,
+    } = this.props;
     return (
       <div className="repl-container">
+        <button onClick={doOpenModal} className={`compiler-settings${modalIsOpen ? ' modal-open' : ''}`}>
+          <i className="material-icons">settings</i>
+        </button>
         <button onClick={this.openREPL} className={`run-stop${REPLIsOpen ? ' hide' : ''}`}><i className="material-icons">play_circle_outline</i></button>
         <button onClick={this.closeREPL} className={`run-stop${REPLIsOpen ? '' : ' hide'}`}><i className="material-icons">stop</i></button>
         <div className={`repl-overlay${REPLIsOpen ? '' : ' hide'}`}>
@@ -132,6 +171,7 @@ Terminal.propTypes = {
   REPLIsOpen: PropTypes.bool.isRequired,
   modalIsOpen: PropTypes.bool.isRequired,
   commands: PropTypes.shape({
+    js: PropTypes.string.isRequired,
     c: PropTypes.string.isRequired,
     cpp: PropTypes.string.isRequired,
     java: PropTypes.string.isRequired,

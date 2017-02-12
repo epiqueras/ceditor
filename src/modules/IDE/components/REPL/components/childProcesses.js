@@ -1,5 +1,5 @@
 /* global document */
-import { spawn, spawnSync } from 'child_process';
+import { spawn, spawnSync, fork } from 'child_process';
 
 export function appendOutput(data, outputRef, inputRef) {
   const dataArray = data.toString('utf8').split('\n');
@@ -30,7 +30,12 @@ export default function runChildProcess(command, outputRef, inputRef) {
 
   if (command.message) appendOutput(command.message, outputRef, inputRef);
 
-  const cp = spawn(command.cmd, command.args, { cwd: command.cwd });
+  let cp;
+  if (command.message.slice(0, 4) === 'node') {
+    cp = fork(command.cmd, command.args, { cwd: command.cwd, silent: true });
+  } else {
+    cp = spawn(command.cmd, command.args, { cwd: command.cwd });
+  }
 
   cp.stdout.on('data', (data) => {
     appendOutput(data, outputRef, inputRef);

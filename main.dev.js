@@ -15,7 +15,7 @@ if (!config.get('theme')) {
   config.set('theme', 'material');
 }
 if (!config.get('commands')) {
-  config.set('commands', { c: '', cpp: '', java: '', python: '' });
+  config.set('commands', { js: '', c: '', cpp: '', java: '', python: '' });
 }
 
 // Module to control application life
