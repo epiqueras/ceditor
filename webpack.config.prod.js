@@ -10,7 +10,7 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: './dir/',
+    publicPath: './dist/',
   },
 
   devtool: 'nosources-source-map',

@@ -2,8 +2,8 @@
 ###### An easy to use desktop text editor and REPL built using Electron, React, Redux, and CodeMirror
 <br/>
 <p align="center">
-  <img alt="Ceditor Themes GIF" src="https://i.giphy.com/WJ4n2OvJQnMre.gif" />
-  <img alt="Ceditor REPL GIF" src="https://i.giphy.com/tvFO1Ookms4wM.gif" />
+  <img alt="Ceditor Themes GIF" src="https://i.giphy.com/NpW8rQAcHh3SU.gif" />
+  <img alt="Ceditor REPL GIF" src="https://i.giphy.com/QHI5xrPFSvocM.gif" />
 </p>
 <br/>
 #### Features (Work in Progress):
