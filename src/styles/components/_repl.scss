@@ -4,7 +4,8 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  font-family: monospace, sans-serif;
+  font-family: "PressStart2P";
+  font-size: 0.6rem;
 
   .compiler-settings {
     position: fixed;
@@ -83,7 +84,6 @@
     .output {
       z-index: 200;
       color: white;
-      font-family: monospace;
       width: 100%;
       height: 100%;
     }
@@ -96,11 +96,12 @@
   .modal {
     position: fixed;
     left: 50%;
-    top: 35%;
+    top: 50%;
     transform: translate(-50%, -50%);
     border-radius: 10px;
     padding: 15px 15px 5px;
     pointer-events: auto;
+    font-family: "Play";
 
     &.hide {
       display: none;
@@ -109,10 +110,12 @@
 
     div:first-child {
       color: white;
-      font-size: 0.95rem;
+      font-size: 1.5rem;
       margin-bottom: 10px;
       user-select: none;
       cursor: default;
+      font-weight: bold;
+      text-align: center;
     }
 
     button {
@@ -121,6 +124,7 @@
       cursor: pointer;
       outline: none;
       user-select: none;
+      font-family: "Play";
 
       @include themify {
         color: theme(primary-text);
@@ -132,16 +136,18 @@
       }
     }
 
-    button:first-child {
+    button:first-of-type {
       float: left;
     }
 
-    button:last-child {
+    button:last-of-type {
       float: right;
     }
 
     label {
       user-select: none;
+      font-weight: bold;
+      font-size: 1rem;
     }
 
     input {
@@ -149,6 +155,10 @@
       width: 100%;
       margin-bottom: 15px;
       outline: none;
+      font-family: "PressStart2P";
+      padding: 4px;
+      font-size: 0.6rem;
+      box-sizing: border-box;
 
       @include themify {
         background: theme(file-tab);

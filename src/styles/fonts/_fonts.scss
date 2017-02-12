@@ -1,0 +1,26 @@
+@font-face {
+  font-family: "Play";
+  src:
+    url('./fonts/play-bold-webfont.woff2') format('woff2'),
+    url('./fonts/play-bold-webfont.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Play";
+  src:
+    url('./fonts/play-regular-webfont.woff2') format('woff2'),
+    url('./fonts/play-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "PressStart2P";
+  src:
+    url('./fonts/pressstart2p-regular-webfont.woff2') format('woff2'),
+    url('./fonts/pressstart2p-regular-webfont.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
