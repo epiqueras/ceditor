@@ -31,11 +31,11 @@ ipcMain.on('getCommands', event => event.returnValue = config.get('commands')); 
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected
-let mainWindow;
+const windows = [];
 
-// Create the browser window. TODO: Support more than one window
-function createWindow() {
-  mainWindow = new BrowserWindow({ width: 800, height: 600 });
+// Create a browser window
+function createWindow(i) {
+  windows[i] = new BrowserWindow({ width: 800, height: 600 });
 
   let pathname = path.join(__dirname, 'index.html');
   let protocol = 'file:';
@@ -47,18 +47,16 @@ function createWindow() {
   }
 
   // Load the index.html of the app
-  mainWindow.loadURL(url.format({
+  windows[i].loadURL(url.format({
     pathname,
     protocol,
     slashes: true,
   }));
 
   // Emitted when the window is closed
-  mainWindow.on('closed', () => {
-    // Dereference the window object, usually you would store windows
-    // in an array if your app supports multi windows, this is the time
-    // when you should delete the corresponding element
-    mainWindow = null;
+  windows[i].on('closed', () => {
+    // Dereference the window object
+    windows.splice(i, 1);
   });
 }
 
@@ -81,10 +79,12 @@ app.on('ready', () => {
     .catch(err => console.error('An error occurred: ', err));
   }
 
+  if (windows.length === 0) createWindow(0);
+
   // Set commands and update other windows
   ipcMain.on('setCommands', (event, commands) => {
     config.set('commands', commands);
-    mainWindow.webContents.send('commandsChanges', commands);
+    windows.forEach(aWindow => aWindow.webContents.send('commandsChanges', commands));
     event.returnValue = true; // eslint-disable-line no-param-reassign
   });
 
@@ -98,7 +98,7 @@ app.on('ready', () => {
   themeSubmenuItems.forEach((subMenuItem) => {
     // eslint-disable-next-line no-param-reassign
     subMenuItem.click = () => {
-      mainWindow.webContents.send('themeChanges', subMenuItem.label);
+      windows.forEach(aWindow => aWindow.webContents.send('themeChanges', subMenuItem.label));
       // eslint-disable-next-line no-param-reassign
       subMenuItem.checked = true;
       config.set('theme', subMenuItem.label);
@@ -107,30 +107,26 @@ app.on('ready', () => {
 
   // Add click events for file submenu
   const fileSubmenuItems = menu.items.find(menuItem => menuItem.label === 'File').submenu.items;
-  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'New File').click = () => mainWindow.webContents.send('newFile');
-  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Open File').click = () => mainWindow.webContents.send('openFile');
-  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save').click = () => mainWindow.webContents.send('save');
-  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save As').click = () => mainWindow.webContents.send('saveAs');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'New File').click = () => createWindow(windows.length);
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'New Tab').click = () => windows[0].webContents.send('newFile');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Open File').click = () => windows[0].webContents.send('openFile');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save').click = () => windows[0].webContents.send('save');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save As').click = () => windows[0].webContents.send('saveAs');
 
   // Attach menu
   Menu.setApplicationMenu(menu);
-
-  createWindow();
 });
 
 // Quit when all windows are closed
 app.on('window-all-closed', () => {
   // On OS X it is common for applications and their menu bar
   // to stay active until the user quits explicitly with Cmd + Q
-  if (process.platform !== 'darwin') {
-    app.quit();
-  }
+  if (process.platform !== 'darwin') app.quit();
 });
 
 app.on('activate', () => {
+  console.log(windows);
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open
-  if (mainWindow === null) {
-    createWindow();
-  }
+  if (windows.length === 0) createWindow(0);
 });

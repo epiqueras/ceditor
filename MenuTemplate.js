@@ -10,8 +10,15 @@ const MenuTemplate = [
         accelerator: 'CommandOrControl+N',
       },
       {
+        label: 'New Tab',
+        accelerator: 'CommandOrControl+T',
+      },
+      {
         label: 'Open File',
         accelerator: 'CommandOrControl+O',
+      },
+      {
+        type: 'separator',
       },
       {
         label: 'Save',
