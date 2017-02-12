@@ -33,7 +33,7 @@ export default class TextEditor extends Component {
     ipcRenderer.on('themeChanges', (event, theme) => doChangeTheme(theme));
     ipcRenderer.on('newFile', () => this.createUntitled());
     ipcRenderer.on('openFile', () => {
-      const openFilePaths = dialog.showOpenDialog({ title: 'Open File', properties: ['openFile', 'createDirectory'] });
+      const openFilePaths = dialog.showOpenDialog(remote.getCurrentWindow(), { title: 'Open File', properties: ['openFile', 'createDirectory'] });
       if (openFilePaths && openFilePaths.length === 1) {
         const path = openFilePaths[0];
         const name = path.slice(path.lastIndexOf('/') + 1);
@@ -47,7 +47,7 @@ export default class TextEditor extends Component {
       const { path } = this.getOpenFile();
       if (path.slice(0, 11) !== '-$untitled-') doSetUnsavedChanges(path, false, true, this.myCodeMirror.getValue());
       else {
-        const openFilePath = dialog.showSaveDialog({ title: 'Save As' });
+        const openFilePath = dialog.showSaveDialog(remote.getCurrentWindow(), { title: 'Save As' });
         if (openFilePath) {
           const value = this.myCodeMirror.getValue();
           doStoreDoc(path, value, JSON.stringify(this.myCodeMirror.getHistory()));
@@ -56,7 +56,7 @@ export default class TextEditor extends Component {
       }
     });
     ipcRenderer.on('saveAs', () => {
-      const openFilePath = dialog.showSaveDialog({ title: 'Save As' });
+      const openFilePath = dialog.showSaveDialog(remote.getCurrentWindow(), { title: 'Save As' });
       if (openFilePath) {
         const { path } = this.getOpenFile();
         const value = this.myCodeMirror.getValue();
@@ -66,7 +66,13 @@ export default class TextEditor extends Component {
     });
 
     // Create a new untitled file if no files are open
-    if (openFiles.length === 0) this.createUntitled();
+    const { id, initialFilePath } = remote.getCurrentWindow();
+    if (initialFilePath) {
+      const name = initialFilePath.slice(initialFilePath.lastIndexOf('/') + 1);
+      doOpenFile(name, initialFilePath);
+      doAddTab(name, initialFilePath);
+      ipcRenderer.sendSync('clearInitialFilePath', id);
+    } else if (openFiles.length === 0) this.createUntitled();
   }
 
   componentDidMount() {
@@ -107,14 +113,11 @@ export default class TextEditor extends Component {
     });
 
     // Set unsaved changes on file tab when changes are made to the document
-    this.myCodeMirror.on('changes', () => {
-      const { path } = this.getOpenFile();
-      const fileTab = this.props.fileTabs.find(tab => tab.path === path);
-      // This will also get called when a new file is created or opened.
-      // So we need to check if the file tab exists before setting the unsaved changes.
-      // Because the file tab is created after the file is opened this stops the event from
-      // setting unsaved changes on opening or creating a file.
-      if (fileTab && !fileTab.unsavedChanges) doSetUnsavedChanges(path, true);
+    this.myCodeMirror.on('changes', (instance, changes) => {
+      if (changes[0].origin !== 'setValue') {
+        const { path } = this.getOpenFile();
+        doSetUnsavedChanges(path, true);
+      }
     });
     this.setupFileDrop(); // Sets up drag and dropping files into the editor
     this.updateBackground(); // Sets the background color to the editor's theme background color
@@ -243,13 +246,6 @@ TextEditor.propTypes = {
       path: PropTypes.string.isRequired,
       value: PropTypes.string.isRequired,
       history: PropTypes.string.isRequired,
-    }),
-  ).isRequired,
-  fileTabs: PropTypes.arrayOf(
-    PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      path: PropTypes.string.isRequired,
-      unsavedChanges: PropTypes.bool.isRequired,
     }),
   ).isRequired,
   doChangeTheme: PropTypes.func.isRequired,

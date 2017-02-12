@@ -3,6 +3,7 @@
 import React, { Component, PropTypes } from 'react';
 import { DragSource, DropTarget } from 'react-dnd';
 import { getEmptyImage } from 'react-dnd-html5-backend';
+import { ipcRenderer } from 'electron';
 
 import ItemTypes from './ItemTypes';
 
@@ -24,6 +25,7 @@ const tabSource = {
     const didDrop = monitor.didDrop();
 
     if (!didDrop) { // If the tab was dropped outside the tab list, cancel the move
+      ipcRenderer.sendSync('draggedTabOut', droppedFilePath);
       props.doMoveTab(droppedFilePath, originalIndex);
     }
 

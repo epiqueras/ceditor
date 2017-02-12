@@ -1,10 +1,15 @@
+/* global window */
+/* global confirm */
 import React, { Component, PropTypes } from 'react';
 import { DropTarget, DragDropContext } from 'react-dnd';
 import HTML5Backend from 'react-dnd-html5-backend';
+import { remote } from 'electron';
 
 import ItemTypes from './ItemTypes';
 import Tab from './Tab';
 import DraggedTabLayer from './DraggedTabLayer';
+
+const { dialog } = remote;
 
 const tabTarget = {
   drop() {
@@ -22,6 +27,13 @@ class TabsList extends Component {
     super(props);
     this.findTab = this.findTab.bind(this);
     this.removeTabAndCloseFile = this.removeTabAndCloseFile.bind(this);
+    window.onbeforeunload = () => {
+      if (this.props.fileTabs.find(file => file.unsavedChanges)) {
+        return !dialog.showMessageBox(remote.getCurrentWindow(),
+          { message: 'You have unsaved changes, are you sure you wish to quit?', buttons: ['Confirm', 'Cancel'] }) ? null : true;
+      }
+      return null;
+    };
   }
 
   findTab(filePath) {

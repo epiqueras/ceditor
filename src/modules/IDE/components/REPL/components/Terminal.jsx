@@ -92,14 +92,14 @@ export default class Terminal extends Component {
         command.message = 'python\n\n';
         break;
       default:
-        return dialog.showMessageBox({ message: 'Unsupported file type.' });
+        return dialog.showMessageBox(remote.getCurrentWindow(), { message: 'Unsupported file type.' });
     }
 
     this.outputRef.innerHTML = '';
     this.outputRef.appendChild(this.inputRef);
     doOpenREPL();
     this.cp = runChildProcess(command, this.outputRef, this.inputRef);
-    if (!this.cp.on) return dialog.showMessageBox({ message: 'Could not find compiler/build tool for this file type in path.' });
+    if (!this.cp.on) return dialog.showMessageBox(remote.getCurrentWindow(), { message: 'Could not find compiler/build tool for this file type in path.' });
     this.cp.on('close', (code) => {
       appendOutput(`\nchild process exited with code ${code}\n`, this.outputRef, this.inputRef);
       this.cp = false;

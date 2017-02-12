@@ -4,7 +4,6 @@ import { changeTheme, changeActiveFile, createNewFile, openFile, storeDoc, setUn
 import { getTheme, getActiveFilePath, getOpenFiles } from './reducer';
 
 import { addTab } from '../FileTabs/actions';
-import { getFileTabs } from '../FileTabs/reducer';
 
 import TextEditor from './components/TextEditor';
 
@@ -13,7 +12,6 @@ function mapStateToProps(state) {
     theme: getTheme(state),
     activeFilePath: getActiveFilePath(state),
     openFiles: getOpenFiles(state),
-    fileTabs: getFileTabs(state),
   };
 }
 

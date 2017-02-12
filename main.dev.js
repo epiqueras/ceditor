@@ -1,7 +1,7 @@
 /* eslint-disable global-require */
 /* eslint-disable no-console */
 /* eslint-disable import/no-extraneous-dependencies */
-import electron, { ipcMain } from 'electron';
+import electron, { app, BrowserWindow, ipcMain, globalShortcut } from 'electron';
 import path from 'path';
 import url from 'url';
 import Config from 'electron-config';
@@ -18,11 +18,6 @@ if (!config.get('commands')) {
   config.set('commands', { js: '', c: '', cpp: '', java: '', python: '' });
 }
 
-// Module to control application life
-const app = electron.app;
-// Module to create native browser window
-const BrowserWindow = electron.BrowserWindow;
-
 // Respond to config requests
 // eslint-disable-next-line no-return-assign
 ipcMain.on('getTheme', event => event.returnValue = config.get('theme')); // eslint-disable-line no-param-reassign
@@ -34,8 +29,19 @@ ipcMain.on('getCommands', event => event.returnValue = config.get('commands')); 
 const windows = [];
 
 // Create a browser window
-function createWindow(i) {
-  windows[i] = new BrowserWindow({ width: 800, height: 600 });
+function createWindow(i, filePath) {
+  // eslint-disable-next-line no-unneeded-ternary
+  windows[i] = new BrowserWindow({ width: 800, height: 600, type: 'textured', minWidth: 800, minHeight: 600, backgroundColor: 'grey' });
+
+  // Emitted when the window is closed
+  windows[i].on('closed', () => {
+    // Dereference the window object
+    windows.splice(i, 1);
+  });
+
+  if (filePath) {
+    windows[i].initialFilePath = filePath;
+  }
 
   let pathname = path.join(__dirname, 'index.html');
   let protocol = 'file:';
@@ -52,13 +58,27 @@ function createWindow(i) {
     protocol,
     slashes: true,
   }));
-
-  // Emitted when the window is closed
-  windows[i].on('closed', () => {
-    // Dereference the window object
-    windows.splice(i, 1);
-  });
 }
+
+// Respond to when tabs are dragged out of the tab bar
+ipcMain.on('draggedTabOut', (event, filePath) => {
+  const newIndex = windows.length;
+  createWindow(newIndex, filePath);
+  event.returnValue = true; // eslint-disable-line no-param-reassign
+});
+
+// Clear initialFilePaths
+ipcMain.on('clearInitialFilePath', (event, windowId) => {
+  windows.find(aWindow => aWindow.id === windowId).initialFilePath = false;
+  event.returnValue = true; // eslint-disable-line no-param-reassign
+});
+
+// Set commands and update other windows
+ipcMain.on('setCommands', (event, commands) => {
+  config.set('commands', commands);
+  windows.forEach(aWindow => aWindow.webContents.send('commandsChanges', commands));
+  event.returnValue = true; // eslint-disable-line no-param-reassign
+});
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -81,13 +101,6 @@ app.on('ready', () => {
 
   if (windows.length === 0) createWindow(0);
 
-  // Set commands and update other windows
-  ipcMain.on('setCommands', (event, commands) => {
-    config.set('commands', commands);
-    windows.forEach(aWindow => aWindow.webContents.send('commandsChanges', commands));
-    event.returnValue = true; // eslint-disable-line no-param-reassign
-  });
-
   // Get and set current theme
   const currentTheme = config.get('theme');
   const menu = Menu.buildFromTemplate(MenuTemplate);
@@ -105,13 +118,20 @@ app.on('ready', () => {
     };
   });
 
+  globalShortcut.register('CommandOrControl+Shift+T', () => {
+    const theCurrentTheme = themeSubmenuItems.find(subMenuItem => subMenuItem.checked === true);
+    let newThemeIndex = themeSubmenuItems.indexOf(theCurrentTheme) + 1;
+    newThemeIndex = newThemeIndex >= themeSubmenuItems.length ? 0 : newThemeIndex;
+    themeSubmenuItems[newThemeIndex].click();
+  });
+
   // Add click events for file submenu
   const fileSubmenuItems = menu.items.find(menuItem => menuItem.label === 'File').submenu.items;
   fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'New File').click = () => createWindow(windows.length);
-  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'New Tab').click = () => windows[0].webContents.send('newFile');
-  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Open File').click = () => windows[0].webContents.send('openFile');
-  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save').click = () => windows[0].webContents.send('save');
-  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save As').click = () => windows[0].webContents.send('saveAs');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'New Tab').click = () => (BrowserWindow.getFocusedWindow() || windows[0]).webContents.send('newFile');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Open File').click = () => (BrowserWindow.getFocusedWindow() || windows[0]).webContents.send('openFile');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save').click = () => (BrowserWindow.getFocusedWindow() || windows[0]).webContents.send('save');
+  fileSubmenuItems.find(subMenuItem => subMenuItem.label === 'Save As').click = () => (BrowserWindow.getFocusedWindow() || windows[0]).webContents.send('saveAs');
 
   // Attach menu
   Menu.setApplicationMenu(menu);
@@ -125,7 +145,6 @@ app.on('window-all-closed', () => {
 });
 
 app.on('activate', () => {
-  console.log(windows);
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open
   if (windows.length === 0) createWindow(0);
