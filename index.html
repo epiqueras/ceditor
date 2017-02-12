@@ -18,8 +18,7 @@
       script.async = false;
       document.body.appendChild(script);
     }
-
-    const path = process.env.ENV === 'production' ? './dist/' : 'http://localhost:8080/';
+    const path = process.env.NODE_ENV === 'production' ? './dist/' : 'http://localhost:8080/';
     loadScript(path, 'vendor.js');
     loadScript(path, 'main.js');
   </script>

@@ -1,12 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
-const StyleLintPlugin = require('stylelint-webpack-plugin');
 
 module.exports = {
   entry: [
-    'react-hot-loader/patch',
-    'webpack-dev-server/client?http://localhost:8080',
-    'webpack/hot/only-dev-server',
     './src/index.js',
   ],
 
@@ -14,14 +10,10 @@ module.exports = {
   output: {
     filename: '[name].js',
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
+    publicPath: './dir/',
   },
 
-  devtool: 'inline-source-map',
-  devServer: {
-    hot: true,
-    publicPath: '/',
-  },
+  devtool: 'nosources-source-map',
 
   resolve: {
     extensions: ['*', '.js', '.jsx'],
@@ -31,7 +23,11 @@ module.exports = {
       {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        use: ['babel-loader'],
+        loader: 'babel-loader',
+        query: {
+          babelrc: false,
+          presets: ['es2015', 'stage-2', 'react'],
+        },
       },
       {
         test: /\.scss$/,
@@ -42,28 +38,25 @@ module.exports = {
         test: /\.(jpe?g|png|gif|svg|eot|woff|ttf|svg|woff2)$/,
         use: ['file-loader'],
       },
-      {
-        enforce: 'pre',
-        test: /\.jsx?$/,
-        exclude: /node_modules/,
-        loader: 'eslint-loader',
-        options: { configFile: './.eslintrc' },
-      },
     ],
   },
 
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        'NODE_ENV': JSON.stringify('development'), // eslint-disable-line quote-props
+        'NODE_ENV': JSON.stringify('production'), // eslint-disable-line quote-props
       },
     }),
-    new webpack.HotModuleReplacementPlugin(),
-    new webpack.NamedModulesPlugin(),
-    new StyleLintPlugin(),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'vendor',
       minChunks: module => module.context && module.context.indexOf('node_modules') !== -1,
+    }),
+    new webpack.optimize.UglifyJsPlugin({
+      sourceMap: true,
+    }),
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      debug: false,
     }),
   ],
 };

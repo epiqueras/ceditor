@@ -31,7 +31,7 @@ const windows = [];
 // Create a browser window
 function createWindow(i, filePath) {
   // eslint-disable-next-line no-unneeded-ternary
-  windows[i] = new BrowserWindow({ width: 800, height: 600, type: 'textured', minWidth: 800, minHeight: 600, backgroundColor: 'grey' });
+  windows[i] = new BrowserWindow({ width: 800, height: 600, type: 'textured', minWidth: 800, minHeight: 600, backgroundColor: 'grey', show: false });
 
   // Emitted when the window is closed
   windows[i].on('closed', () => {
@@ -39,11 +39,15 @@ function createWindow(i, filePath) {
     windows.splice(i, 1);
   });
 
+  windows[i].once('ready-to-show', () => {
+    windows[i].show();
+  });
+
   if (filePath) {
     windows[i].initialFilePath = filePath;
   }
 
-  let pathname = path.join(__dirname, 'index.html');
+  let pathname = path.resolve(__dirname, '../', 'index.html');
   let protocol = 'file:';
 
   // Set path to webpack dev server in development
