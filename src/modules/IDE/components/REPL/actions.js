@@ -19,6 +19,7 @@ export function closeREPL() {
 
 export function openModal() {
   document.body.style.pointerEvents = 'none';
+  document.body.getElementsByClassName('file-tabs-container')[0].style.pointerEvents = 'none';
   return {
     type: OPEN_MODAL,
   };
@@ -26,6 +27,7 @@ export function openModal() {
 
 export function closeModal() {
   document.body.style.pointerEvents = 'auto';
+  document.body.getElementsByClassName('file-tabs-container')[0].style.pointerEvents = 'auto';
   return {
     type: CLOSE_MODAL,
   };

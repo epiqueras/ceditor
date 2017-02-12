@@ -4,6 +4,7 @@ import HTML5Backend from 'react-dnd-html5-backend';
 
 import ItemTypes from './ItemTypes';
 import Tab from './Tab';
+import DraggedTabLayer from './DraggedTabLayer';
 
 const tabTarget = {
   drop() {
@@ -61,10 +62,13 @@ class TabsList extends Component {
       );
     });
     return connectDropTarget(
-      <div className="file-tabs-container CodeMirror">
-        <ul>
-          {tabs}
-        </ul>
+      <div style={{ position: 'fixed', width: '100vw', height: '100vh', pointerEvents: 'none', zIndex: 100 }}>
+        <div style={{ pointerEvents: 'auto' }} className="file-tabs-container CodeMirror">
+          <ul>
+            {tabs}
+            <DraggedTabLayer />
+          </ul>
+        </div>
       </div>,
     );
   }

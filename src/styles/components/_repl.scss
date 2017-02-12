@@ -19,6 +19,7 @@
     border-radius: 10px;
     color: white;
     outline: none;
+    user-select: none;
 
     i {
       font-size: 1.3rem;
@@ -48,6 +49,7 @@
     outline: none;
     cursor: pointer;
     pointer-events: auto;
+    user-select: none;
 
     &.hide {
       display: none;
@@ -109,6 +111,8 @@
       color: white;
       font-size: 0.95rem;
       margin-bottom: 10px;
+      user-select: none;
+      cursor: default;
     }
 
     button {
@@ -116,6 +120,7 @@
       padding: 5px;
       cursor: pointer;
       outline: none;
+      user-select: none;
 
       @include themify {
         color: theme(primary-text);
@@ -133,6 +138,10 @@
 
     button:last-child {
       float: right;
+    }
+
+    label {
+      user-select: none;
     }
 
     input {

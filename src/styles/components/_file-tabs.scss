@@ -22,7 +22,8 @@
     overflow: hidden;
     padding: 0 10px;
     user-select: none;
-    -webkit-user-select: none;
+    border: 1px solid darkgrey;
+    border-bottom: 2px solid darkgrey;
 
     &:last-child {
       margin-right: 10px;
