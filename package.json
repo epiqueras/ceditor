@@ -1,8 +1,8 @@
 {
-  "name": "Ceditor",
+  "name": "ceditor",
   "version": "1.0.0",
   "description": "A simple and easy to use code editor with a built in REPL.",
-  "main": "main.js",
+  "main": "index.js",
   "license": "MIT",
   "scripts": {
     "start:electron": "electron ./index.js",
@@ -11,9 +11,13 @@
     "build:renderer": "NODE_ENV=production webpack --config webpack.config.prod.js",
     "build:main": "NODE_ENV=production babel --no-babelrc main --out-dir main-dist --presets=es2015,stage-2",
     "build:both": "npm run build:renderer && npm run build:main",
-    "build:clean": "rimraf dist && rimraf main-dist",
-    "clean-build": "npm run build:clean && npm run build:both",
-    "start:prod": "NODE_ENV=production npm run start:electron"
+    "clean": "rimraf dist && rimraf main-dist",
+    "clean:build": "npm run clean && npm run build:both",
+    "start:prod": "NODE_ENV=production npm run start:electron",
+    "pack:mac": "electron-packager . --asar --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/logo.icns --out=out",
+    "pack:win": "electron-packager . --asar --overwrite --platform=win32 --arch=ia32 --icon=assets/icons/win/logo.ico --out=out",
+    "pack:all": "npm run pack:mac && npm run pack:win",
+    "build:pack": "npm run clean:build && npm run pack:all"
   },
   "repository": "https://github.com/epiqueras/ceditor",
   "keywords": [
@@ -35,6 +39,7 @@
     "concurrently": "^3.1.0",
     "css-loader": "^0.26.1",
     "electron-devtools-installer": "^2.0.1",
+    "electron-packager": "^8.5.1",
     "eslint": "^3.13.1",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-loader": "^1.6.1",
@@ -42,7 +47,7 @@
     "eslint-plugin-jsx-a11y": "^3.0.2",
     "eslint-plugin-react": "^6.9.0",
     "file-loader": "^0.10.0",
-    "node-sass": "^4.3.0",
+    "node-sass": "^4.5.0",
     "postcss": "^5.2.11",
     "react-hot-loader": "^3.0.0-beta.6",
     "redux-devtools": "^3.3.2",

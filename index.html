@@ -2,7 +2,7 @@
 <html class="default">
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>ceditor</title>
   </head>
   <body>
     <div id="app"></div>
@@ -12,6 +12,7 @@
     /* eslint-disable no-multiple-empty-lines */
     /* eslint-disable no-trailing-spaces */
     /* eslint-disable eol-last */
+    process.env.NODE_ENV = process.env.NODE_ENV || 'production';
     function loadScript(path, file) {
       const script = document.createElement('script');
       script.src = `${path}${file}`;

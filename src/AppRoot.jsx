@@ -10,8 +10,8 @@ const AppRoot = ({ store }) => (
   <Provider store={store}>
     <div className="app-root">
       <Helmet
-        defaultTitle="Ceditor"
-        titleTemplate="%s | Ceditor"
+        defaultTitle="ceditor"
+        titleTemplate="%s | ceditor"
       />
       <App />
     </div>
