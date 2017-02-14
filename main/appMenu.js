@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-param-reassign */
 import { app, BrowserWindow, Menu, globalShortcut } from 'electron';
@@ -189,6 +190,32 @@ export default function createAppMenu(windows, config) {
         },
         {
           role: 'close',
+        },
+      ],
+    },
+    {
+      label: 'Updates',
+      submenu: [
+        {
+          label: `Version ${app.getVersion()}`,
+          enabled: false,
+        },
+        {
+          label: 'Checking for Update',
+          enabled: false,
+          key: 'checkingForUpdate',
+        },
+        {
+          label: 'Check for Update',
+          visible: false,
+          key: 'checkForUpdate',
+          click: () => require('electron').autoUpdater.checkForUpdates(),
+        },
+        {
+          label: 'Restart and Install Update',
+          visible: false,
+          key: 'restartToUpdate',
+          click: () => require('electron').autoUpdater.quitAndInstall(),
         },
       ],
     },

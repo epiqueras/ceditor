@@ -1,7 +1,9 @@
 {
   "name": "ceditor",
-  "version": "1.0.0",
+  "productName": "ceditor",
+  "author": "epiqueras",
   "description": "A simple and easy to use code editor with a built in REPL.",
+  "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
@@ -9,15 +11,17 @@
     "start:dev-server": "webpack-dev-server --config webpack.config.dev.js",
     "start": "NODE_ENV=development concurrently -k 'npm run start:dev-server' 'npm run start:electron'",
     "build:renderer": "NODE_ENV=production webpack --config webpack.config.prod.js",
-    "build:main": "NODE_ENV=production babel --no-babelrc main --out-dir main-dist --presets=es2015,stage-2",
+    "build:main": "[ -d main-dist ] || mkdir main-dist && NODE_ENV=production babel --no-babelrc main -d main-dist --presets=es2015,stage-2 && babel --no-babelrc scripts/winInstaller.js -o scripts/winInstaller.prod.js --presets=es2015,stage-2",
     "build:both": "npm run build:renderer && npm run build:main",
     "clean": "rimraf dist && rimraf main-dist",
     "clean:build": "npm run clean && npm run build:both",
     "start:prod": "NODE_ENV=production npm run start:electron",
     "pack:mac": "electron-packager . --asar --overwrite --platform=darwin --arch=x64 --icon=assets/icons/mac/logo.icns --out=out",
-    "pack:win": "electron-packager . --asar --overwrite --platform=win32 --arch=ia32 --icon=assets/icons/win/logo.ico --out=out",
+    "pack:win": "electron-packager . --asar --overwrite --platform=win32 --arch=ia32 --icon=assets/icons/win/logo.ico --out=out --version-string.CompanyName='ceditor' --version-string.FileDescription='ceditor' --version-string.ProductName='ceditor'",
     "pack:all": "npm run pack:mac && npm run pack:win",
-    "build:pack": "npm run clean:build && npm run pack:all"
+    "build:pack": "npm run clean:build && npm run pack:all",
+    "build:installer": "node ./scripts/winInstaller.prod.js",
+    "prepare:release": "npm run build:pack && build:installer"
   },
   "repository": "https://github.com/epiqueras/ceditor",
   "keywords": [
@@ -26,7 +30,6 @@
     "Code Editor",
     "REPL"
   ],
-  "author": "epiqueras",
   "devDependencies": {
     "babel-cli": "^6.22.2",
     "babel-core": "^6.21.0",
@@ -40,6 +43,8 @@
     "css-loader": "^0.26.1",
     "electron-devtools-installer": "^2.0.1",
     "electron-packager": "^8.5.1",
+    "electron-squirrel-startup": "^1.0.0",
+    "electron-winstaller": "^2.5.2",
     "eslint": "^3.13.1",
     "eslint-config-airbnb": "^14.0.0",
     "eslint-loader": "^1.6.1",
