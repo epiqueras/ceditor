@@ -1,4 +1,5 @@
 import fs from 'fs';
+import sysPath from 'path';
 
 export const CHANGE_THEME = 'CHANGE_THEME';
 export const CHANGE_ACTIVE_FILE = 'CHANGE_ACTIVE_FILE';
@@ -70,7 +71,7 @@ export function setUnsavedChanges(filePath, unsavedChanges, saveFile = false, da
 
 export function saveAs(prevFilePath, filePath, data = '') {
   fs.writeFileSync(filePath, data);
-  const fileName = filePath.slice(filePath.lastIndexOf('/') + 1);
+  const fileName = filePath.slice(filePath.lastIndexOf(sysPath.sep) + 1);
   return {
     type: SAVE_AS,
     fileName,

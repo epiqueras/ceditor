@@ -24,6 +24,7 @@ deleteOutputFolder().then(() => {
     outputDirectory: path.resolve(outPath, 'windows-installer'),
     setupExe: 'ceditorSetup.exe',
     setupIcon: path.resolve(rootPath, 'assets', 'icons', 'win', 'logo.ico'),
+    skipUpdateIcon: true,
   });
 }).catch((error) => {
   console.error(error.message || error);

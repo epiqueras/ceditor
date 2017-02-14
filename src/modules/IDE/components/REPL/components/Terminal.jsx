@@ -65,18 +65,20 @@ export default class Terminal extends Component {
       case '.c':
         if (!commands.c) return doOpenModal();
         command.compileCmd = commands.c;
-        command.compileArgs = ['-o', `${cleanFileName}.o`, fileName];
-        command.cmd = `${currentDirectory}${cleanFileName}.o`;
+        command.compileArgs = ['-o', `${cleanFileName}.exe`, fileName];
+        command.cmd = `${currentDirectory}${cleanFileName}.exe`;
         command.cwd = currentDirectory;
         command.message = "C: If you're having trouble with output buffering, copy this above your main function:\nsetvbuf(stdout, NULL, _IONBF, 0);\n\n";
+        if (commands.c === 'bcc32') commands.compileArgs = [`-e${cleanFileName}.exe`, fileName];
         break;
       case '.cpp':
         if (!commands.cpp) return doOpenModal();
         command.compileCmd = commands.cpp;
-        command.compileArgs = ['-o', `${cleanFileName}.o`, fileName];
-        command.cmd = `${currentDirectory}${cleanFileName}.o`;
+        command.compileArgs = ['-o', `${cleanFileName}.exe`, fileName];
+        command.cmd = `${currentDirectory}${cleanFileName}.exe`;
         command.cwd = currentDirectory;
         command.message = "C++: If you're having trouble with output buffering, copy this above your main function:\nsetvbuf(stdout, NULL, _IONBF, 0);\n\n";
+        if (commands.cpp === 'bcc32') commands.compileArgs = [`-e${cleanFileName}.exe`, fileName];
         break;
       case '.java':
         if (!commands.java) return doOpenModal();
