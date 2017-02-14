@@ -21,7 +21,7 @@
     "pack:all": "npm run pack:mac && npm run pack:win",
     "build:pack": "npm run clean:build && npm run pack:all",
     "build:installer": "node ./scripts/winInstaller.prod.js",
-    "prepare:release": "npm run build:pack && build:installer"
+    "prepare:release": "npm run build:pack && npm run build:installer"
   },
   "repository": "https://github.com/epiqueras/ceditor",
   "keywords": [

@@ -28,7 +28,7 @@ deleteOutputFolder().then(function () {
   var outPath = _path2.default.resolve(rootPath, 'out');
 
   return (0, _electronWinstaller.createWindowsInstaller)({
-    appDirectory: _path2.default.resolve(outPath, 'ceditor-win-32-ia32'),
+    appDirectory: _path2.default.resolve(outPath, 'ceditor-win32-ia32'),
     iconUrl: 'https://raw.githubusercontent.com/epiqueras/ceditor/master/assets/icons/win/logo.ico',
     noMsi: true,
     outputDirectory: _path2.default.resolve(outPath, 'windows-installer'),

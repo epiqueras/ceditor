@@ -18,7 +18,7 @@ deleteOutputFolder().then(() => {
   const outPath = path.resolve(rootPath, 'out');
 
   return createWindowsInstaller({
-    appDirectory: path.resolve(outPath, 'ceditor-win-32-ia32'),
+    appDirectory: path.resolve(outPath, 'ceditor-win32-ia32'),
     iconUrl: 'https://raw.githubusercontent.com/epiqueras/ceditor/master/assets/icons/win/logo.ico',
     noMsi: true,
     outputDirectory: path.resolve(outPath, 'windows-installer'),
