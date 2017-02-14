@@ -3,7 +3,7 @@
 <br/>
 #### Downloads:
 - Mac: <a href="https://github.com/epiqueras/ceditor/releases/download/v1.0.0/ceditor-mac.zip" download="ceditor">download zip</a>
-- Windows: <a href="https://github.com/epiqueras/ceditor/releases/download/v1.0.0/ceditorSetup.exe" download="ceditor">download installer</a>
+- Windows: <a href="https://github.com/epiqueras/ceditor/releases/download/v1.0.0/ceditorSetup.exe" download="ceditorSetup">download installer</a>
 <br/>
 <br/>
 <br/>
