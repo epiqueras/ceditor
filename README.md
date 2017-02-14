@@ -2,8 +2,8 @@
 ###### An easy to use desktop text editor and REPL built using Electron, React, Redux, and CodeMirror
 <br/>
 #### Downloads:
-- Mac: <a href="https://github.com/epiqueras/ceditor/releases/download/v1.0.0/ceditor-mac-64.zip" download="ceditor">download zip</a>
-- Windows: <a href="https://github.com/epiqueras/ceditor/releases/download/v1.0.0/ceditor-win32-ia32.zip" download="ceditor">download zip</a>
+- Mac: <a href="https://github.com/epiqueras/ceditor/releases/download/v1.0.0/ceditor-mac.zip" download="ceditor">download zip</a>
+- Windows: <a href="https://github.com/epiqueras/ceditor/releases/download/v1.0.0/ceditorSetup.exe" download="ceditor">download installer</a>
 <br/>
 <br/>
 <br/>
