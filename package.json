@@ -43,7 +43,6 @@
     "css-loader": "^0.26.1",
     "electron-devtools-installer": "^2.0.1",
     "electron-packager": "^8.5.1",
-    "electron-squirrel-startup": "^1.0.0",
     "electron-winstaller": "^2.5.2",
     "eslint": "^3.13.1",
     "eslint-config-airbnb": "^14.0.0",
@@ -79,6 +78,7 @@
     "react-dom": "^15.4.2",
     "react-helmet": "^4.0.0",
     "react-redux": "^5.0.2",
-    "redux": "^3.6.0"
+    "redux": "^3.6.0",
+    "electron-squirrel-startup": "^1.0.0"
   }
 }
