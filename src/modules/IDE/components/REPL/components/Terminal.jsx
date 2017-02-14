@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 import React, { Component, PropTypes } from 'react';
 import { remote } from 'electron';
+import sysPath from 'path';
 
 import runChildProcess, { appendOutput } from './childProcesses';
 import SettingsModal from './SettingsModal';
@@ -49,8 +50,8 @@ export default class Terminal extends Component {
 
   openREPL() {
     const { activeFilePath, commands, doOpenREPL, doOpenModal } = this.props;
-    const currentDirectory = activeFilePath.slice(0, activeFilePath.lastIndexOf('/') + 1);
-    const fileName = activeFilePath.slice(activeFilePath.lastIndexOf('/') + 1);
+    const currentDirectory = activeFilePath.slice(0, activeFilePath.lastIndexOf(sysPath.sep) + 1);
+    const fileName = activeFilePath.slice(activeFilePath.lastIndexOf(sysPath.sep) + 1);
     const cleanFileName = fileName.slice(0, fileName.lastIndexOf('.'));
     const fileExt = fileName.slice(fileName.lastIndexOf('.'));
     const command = { cmd: '', args: [], compileCmd: '', compileArgs: [], cwd: '', message: '' };

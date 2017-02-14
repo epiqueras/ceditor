@@ -3,6 +3,7 @@
 import React, { Component, PropTypes } from 'react';
 import CodeMirror from 'codemirror';
 import { ipcRenderer, remote } from 'electron';
+import sysPath from 'path';
 
 import '../codeMirrorDeps';
 
@@ -36,7 +37,7 @@ export default class TextEditor extends Component {
       const openFilePaths = dialog.showOpenDialog(remote.getCurrentWindow(), { title: 'Open File', properties: ['openFile', 'createDirectory'] });
       if (openFilePaths && openFilePaths.length === 1) {
         const path = openFilePaths[0];
-        const name = path.slice(path.lastIndexOf('/') + 1);
+        const name = path.slice(path.lastIndexOf(sysPath.sep) + 1);
         if (!this.props.openFiles.find(file => file.path === path)) { // If it's not open, open it
           doOpenFile(name, path);
           doAddTab(name, path);
@@ -68,7 +69,7 @@ export default class TextEditor extends Component {
     // Create a new untitled file if no files are open
     const { id, initialFilePath } = remote.getCurrentWindow();
     if (initialFilePath) {
-      const name = initialFilePath.slice(initialFilePath.lastIndexOf('/') + 1);
+      const name = initialFilePath.slice(initialFilePath.lastIndexOf(sysPath.sep) + 1);
       doOpenFile(name, initialFilePath);
       doAddTab(name, initialFilePath);
       ipcRenderer.sendSync('clearInitialFilePath', id);
