@@ -154,7 +154,9 @@ export default class TextEditor extends Component {
   setupFileDrop() {
     const { doChangeActiveFile, doOpenFile, doAddTab } = this.props;
     const fileDrop = document.getElementById('file-drop');
-    fileDrop.ondragover = fileDrop.ondragleave = fileDrop.ondragend = () => false;
+    fileDrop.ondragover = () => false;
+    fileDrop.ondragleave = () => false;
+    fileDrop.ondragend = () => false;
     fileDrop.ondrop = (event) => {
       event.preventDefault();
       if (event.dataTransfer.files.length > 0) { // Check if it's a file

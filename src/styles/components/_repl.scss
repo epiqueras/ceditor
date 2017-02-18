@@ -4,7 +4,7 @@
   width: 100vw;
   height: 100vh;
   pointer-events: none;
-  font-family: "PressStart2P";
+  font-family: "Play";
   font-size: 0.6rem;
 
   .compiler-settings {
@@ -86,10 +86,26 @@
       color: white;
       width: 100%;
       height: 100%;
+      font-size: 1rem;
+      overflow-y: scroll;
+      padding-right: 65px;
     }
 
     .input {
       outline: none;
+      color: yellow;
+    }
+
+    .savedInput {
+      color: yellow;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .message {
+      color: lightblue;
     }
   }
 
@@ -101,7 +117,6 @@
     border-radius: 10px;
     padding: 15px 15px 5px;
     pointer-events: auto;
-    font-family: "Play";
 
     &.hide {
       display: none;
@@ -124,7 +139,6 @@
       cursor: pointer;
       outline: none;
       user-select: none;
-      font-family: "Play";
 
       @include themify {
         color: theme(primary-text);
@@ -155,7 +169,6 @@
       width: 100%;
       margin-bottom: 15px;
       outline: none;
-      font-family: "PressStart2P";
       padding: 4px;
       font-size: 0.6rem;
       box-sizing: border-box;

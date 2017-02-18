@@ -122,8 +122,8 @@ export default class Terminal extends Component {
 
   toStdin(event) {
     if (event.keyCode === 13) {
-      appendOutput(`${this.inputRef.textContent}\n`, this.outputRef, this.inputRef);
-      if (!this.cp) appendOutput('Child process already exited, please rerun your code.\n', this.outputRef, this.inputRef);
+      appendOutput(`${this.inputRef.textContent}\n`, this.outputRef, this.inputRef, 'savedInput');
+      if (!this.cp) appendOutput('Child process already exited, please rerun your code.\n', this.outputRef, this.inputRef, 'error');
       else this.cp.stdin.write(`${this.inputRef.textContent.slice(2)}\n`, 'utf8');
       this.setCaretToEnd();
     }
