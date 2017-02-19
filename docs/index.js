@@ -1,5 +1,17 @@
 /* eslint-disable */
 
+function macDownload(event) {
+  var macInput = document.getElementById('progressMac');
+  if (macInput.checked) event.preventDefault();
+  else macInput.checked = true;
+}
+
+function winDownload(event) {
+  var winInput = document.getElementById('progressWindows');
+  if (winInput.checked) event.preventDefault();
+  else winInput.checked = true;
+}
+
 window.onload = function() {
   var myVideo = document.getElementById('my-video');
   var myCanvas = document.getElementById('my-canvas');

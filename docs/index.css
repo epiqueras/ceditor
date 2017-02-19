@@ -33,6 +33,7 @@ html, body {
   -webkit-transform: translate(-50%, -50%);
   transform: translate(-50%, -50%);
   text-align: center;
+  z-index: 125;
 }
 
 .logo {
@@ -45,27 +46,551 @@ html, body {
   width: 60%;
   left: 20%;
   margin-top: 40px;
-}
-
-.apple-logo,
-.windows-logo {
-  position: absolute;
-  width: 35%;
-  top: 50%;
-  -webkit-transform: translateY(-50%);
-          transform: translateY(-50%);
-}
-
-.apple-logo {
-  right: 0;
-}
-
-.windows-logo {
-  left: 0;
+  text-align: left;
 }
 
 #my-canvas {
   position: fixed;
   z-index: 150;
   display: none;
+}
+
+::-moz-selection {
+  background: black;
+  color: white;
+}
+
+::selection {
+  background: black;
+  color: white;
+}
+
+a {
+  text-decoration: none;
+}
+
+.download {
+  position: absolute;
+  top: calc(50% - 30px);
+  right: calc(50% - 115px);
+  width: 230px;
+  height: 60px;
+  background-image: -webkit-linear-gradient(bottom, rgba(0, 0, 0, 0.075), rgba(255, 255, 255, 0.045));
+  background-image: linear-gradient(to top, rgba(0, 0, 0, 0.075), rgba(255, 255, 255, 0.045));
+  box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.09), inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 0 1px rgba(0, 0, 0, 0.3), 0 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 100px;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 60px;
+  text-align: center;
+  letter-spacing: 5px;
+  overflow: hidden;
+  -webkit-transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81), -webkit-transform 0.15s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81), -webkit-transform 0.15s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81), transform 0.15s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81), transform 0.15s cubic-bezier(0.67, 0.13, 0.1, 0.81), -webkit-transform 0.15s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+}
+
+.download:hover {
+  right: calc(50% - 200px);
+  width: 400px;
+}
+
+.download:active {
+  -webkit-transform: translateY(3px);
+  transform: translateY(3px);
+}
+
+.download::before,
+.download::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  -webkit-transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+}
+
+.download::before {
+  content: 'DOWNLOAD';
+}
+
+.download::after {
+  content: 'SELECT A PLATFORM';
+  top: -60px;
+  opacity: 0;
+}
+
+.download:hover::after {
+  top: 0;
+  opacity: 1;
+}
+
+.download:hover::before {
+  top: 60px;
+  opacity: 0;
+}
+
+.platforms {
+  position: fixed;
+  top: calc(50% - 100px);
+  left: calc(50% - 195px);
+  height: 200px;
+  width: 390px;
+  background: #222;
+  border-radius: 5px;
+  visibility: hidden;
+  -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+  opacity: 0;
+  overflow: hidden;
+  -webkit-transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+}
+
+.platforms:target {
+  visibility: visible;
+  -webkit-transform: scale(1);
+  transform: scale(1);
+  opacity: 1;
+}
+
+.platforms a {
+  position: absolute;
+  top: 200px;
+  left: 10px;
+  width: 180px;
+  height: 180px;
+  border-radius: 5px;
+  color: white;
+  text-transform: uppercase;
+  -webkit-transition: top 0.5s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: top 0.5s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+}
+
+.platforms a:nth-child(1) {
+  -webkit-transition-delay: 0.1s;
+  transition-delay: 0.1s;
+}
+
+.platforms a:nth-child(2) {
+  left: 200px;
+}
+
+.platforms:target a {
+  top: 10px;
+}
+
+.platforms a:hover {
+  background: #444;
+  box-shadow: 0 0 0 1px #333;
+}
+
+.platforms a::before {
+  content: attr(data-os);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+}
+
+.platforms a::after {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  line-height: 120px;
+  text-align: center;
+  font-size: 300%;
+}
+
+.platforms a:nth-child(1)::after {
+  content: '⊞';
+}
+
+.platforms a:nth-child(2)::after {
+  content: '⏍';
+}
+
+.installer {
+  position: fixed;
+  top: calc(50% - 150px);
+  left: calc(50% - 300px);
+  width: 600px;
+  height: 300px;
+  background: #222;
+  border-radius: 5px;
+  visibility: hidden;
+  -webkit-transform: scale(0.9);
+  transform: scale(0.9);
+  opacity: 0;
+  -webkit-transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+}
+
+.installer:target {
+  visibility: visible;
+  -webkit-transform: scale(1);
+  transform: scale(1);
+  opacity: 1;
+}
+
+.installer a.back {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 38px;
+  height: 38px;
+  line-height: 38px;
+  text-align: center;
+  font-size: 200%;
+  color: #bbb;
+}
+
+.installer a.back::before {
+  content: '◂';
+}
+
+.installer a.back::after {
+  content: 'Back';
+  position: absolute;
+  top: 7px;
+  left: 30px;
+  height: 20;
+  line-height: 20px;
+  font-size: 40%;
+  text-align: center;
+  color: #cacaca;
+  border-radius: 5px;
+  pointer-events: none;
+  opacity: 0;
+  -webkit-transition: all 0.2s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: all 0.2s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+}
+
+.installer a.back:hover::after {
+  left: 38px;
+  opacity: 1;
+}
+
+.installer a.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 200%;
+  color: #bbb;
+}
+
+.installer a.close::before {
+  content: '×';
+}
+
+.installer a.close::after {
+  content: 'Close';
+  position: absolute;
+  top: 7px;
+  right: 30px;
+  height: 20;
+  line-height: 20px;
+  font-size: 40%;
+  text-align: center;
+  color: #cacaca;
+  border-radius: 5px;
+  pointer-events: none;
+  opacity: 0;
+  -webkit-transition: all 0.2s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: all 0.2s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+}
+
+.installer a.close:hover::after {
+  right: 38px;
+  opacity: 1;
+}
+
+.installer .info {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  height: 280px;
+  width: 180px;
+}
+
+.installer .info::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 180px;
+  height: 220px;
+  line-height: 220px;
+  text-align: center;
+  font-size: 1000%;
+  color: white;
+}
+
+.installer .info::after {
+  content: attr(data-weight);
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 180px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  font-size: 100%;
+  letter-spacing: 5px;
+  color: white;
+}
+
+.installer#windows .info::before {
+  content: '⊞';
+}
+
+.installer#mac .info::before {
+  content: '⏍';
+}
+
+.installer .details {
+  position: absolute;
+  top: 10px;
+  left: 210px;
+  height: 200px;
+  width: 360px;
+  padding: 10px;
+}
+
+.installer .details p {
+  margin: 0;
+  font-weight: bolder;
+  font-size: 120%;
+  color: #444;
+}
+
+.installer .details span {
+  color: #cacaca;
+}
+
+.installer .details ul {
+  padding-left: 0;
+  list-style: none;
+  color: #888;
+}
+
+.installer .details ul li {
+  margin-left: 0;
+  margin-bottom: 8px;
+  opacity: 0;
+  -webkit-transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  transition: all 0.3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+}
+
+.installer .details ul li::before {
+  content: '⧈';
+  margin-right: 10px;
+  color: #ccc;
+}
+
+.installer:target .details ul li {
+  margin-left: 10px;
+  opacity: 1;
+}
+
+.installer:target .details ul li:nth-child(1) {
+  -webkit-transition-delay: 0.1s;
+  transition-delay: 0.1s;
+}
+
+.installer:target .details ul li:nth-child(2) {
+  -webkit-transition-delay: 0.2s;
+  transition-delay: 0.2s;
+}
+
+.installer:target .details ul li:nth-child(3) {
+  -webkit-transition-delay: 0.3s;
+  transition-delay: 0.3s;
+}
+
+.installer:target .details ul li:nth-child(4) {
+  -webkit-transition-delay: 0.4s;
+  transition-delay: 0.4s;
+}
+
+.installer:target .details ul li:nth-child(5) {
+  -webkit-transition-delay: 0.5s;
+  transition-delay: 0.5s;
+}
+
+.installer label {
+  position: absolute;
+  bottom: 20px;
+  right: 60px;
+  height: 40px;
+  width: 260px;
+  border-radius: 5px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.installer label input {
+  display: none;
+}
+
+.installer label a {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.installer label span {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  line-height: 40px;
+  text-align: center;
+  color: white;
+  background: black;
+}
+
+.installer label input:checked ~ span {
+  background: #222;
+  -webkit-animation: downloadSuccess 3.1s ease;
+  animation: downloadSuccess 3.1s ease;
+}
+
+.installer label span::after {
+  content: 'DOWNLOAD';
+  position: absolute;
+  width: 80%;
+  height: 100%;
+  top: 0;
+  left: 10%;
+}
+
+.installer label input:checked ~ span::after {
+  content: '✔ SUCCESS!';
+  -webkit-animation: downloadState 3s;
+  animation: downloadState 3s;
+}
+
+.installer label span::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 5px;
+}
+
+.installer label input:checked ~ span::before {
+  -webkit-animation: downloadProgress 3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+  animation: downloadProgress 3s cubic-bezier(0.67, 0.13, 0.1, 0.81);
+}
+
+@-webkit-keyframes downloadSuccess {
+  0%,
+  90% {
+    background: black;
+  }
+
+  100% {
+    background: #222;
+  }
+}
+
+@keyframes downloadSuccess {
+  0%,
+  90% {
+    background: black;
+  }
+
+  100% {
+    background: #222;
+  }
+}
+
+@-webkit-keyframes downloadState {
+  0%,
+  95% {
+    content: 'DOWNLOADING...';
+  }
+
+  100% {
+    content: '✔ SUCCESS!';
+  }
+}
+
+@keyframes downloadState {
+  0%,
+  95% {
+    content: 'DOWNLOADING...';
+  }
+
+  100% {
+    content: '✔ SUCCESS!';
+  }
+}
+
+@-webkit-keyframes downloadProgress {
+  0% {
+    width: 5%;
+    opacity: 1;
+  }
+
+  35% {
+    width: 17%;
+  }
+
+  64% {
+    width: 51%;
+  }
+
+  81% {
+    width: 70%;
+  }
+
+  90% {
+    width: 86%;
+    opacity: 1;
+  }
+
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
+}
+
+@keyframes downloadProgress {
+  0% {
+    width: 5%;
+    opacity: 1;
+  }
+
+  35% {
+    width: 17%;
+  }
+
+  64% {
+    width: 51%;
+  }
+
+  81% {
+    width: 70%;
+  }
+
+  90% {
+    width: 86%;
+    opacity: 1;
+  }
+
+  100% {
+    width: 100%;
+    opacity: 0;
+  }
 }

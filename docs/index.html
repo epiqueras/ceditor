@@ -10,17 +10,48 @@
   <body>
     <video id="my-video" src="ceditor-web-preview.mp4" autoplay muted playsinline></video>
     <canvas id="my-canvas"></canvas>
-    <div class="overlay">
-      <div class="center-box">
-        <img class="logo" src="logo.png" alt="ceditor Logo">
-        <div class="downloads-title">Downloads:</div>
-        <div class="downloads-container">
-          <a href="https://github.com/epiqueras/ceditor/releases/download/v1.0.3/ceditor-mac.zip" download="ceditor">
-            <img class="apple-logo" src="apple-logo.png" alt="Apple Logo Download Link">
-          </a>
-          <a href="https://github.com/epiqueras/ceditor/releases/download/v1.0.3/ceditorSetup.exe" download="ceditorSetup">
-            <img class="windows-logo" src="windows-logo.png" alt="Windows Logo Download Link">
-          </a>
+    <div class="overlay"></div>
+    <div class="center-box">
+      <img class="logo" src="logo.png" alt="ceditor Logo">
+      <div class="downloads-container">
+        <a class="download" href="#platforms"></a>
+        <div class="platforms" id="platforms">
+          <a href="#windows" data-os="windows"></a>
+          <a href="#mac" data-os="mac"></a>
+        </div>
+        <div class="installer" id="windows">
+          <div class="info" data-weight="85.9 MB"></div>
+          <div class="details">
+            <p>Windows Installer</p>
+            <span>Version 1.0.3</span>
+            <ul>
+              <li>ceditorSetup.exe</li>     
+            </ul>
+          </div>
+            <label for="progressWindows">
+              <input type="radio" id="progressWindows"/>
+              <span></span>
+              <a onclick="winDownload(event);" href="https://github.com/epiqueras/ceditor/releases/download/v1.0.3/ceditorSetup.exe" download="ceditorSetup"></a>
+            </label>
+          <a class="back" href="#platforms"></a>
+          <a class="close" href="#"></a>
+        </div>
+        <div class="installer" id="mac">
+          <div class="info" data-weight="85 MB"></div>
+          <div class="details">
+            <p>Mac Zip</p>
+            <span>Version 1.0.3</span>
+            <ul>
+              <li>ceditor-mac.zip</li>    
+            </ul>
+          </div>
+            <label for="progressMac">
+              <input type="radio" id="progressMac"/>
+              <span></span>
+              <a onclick="macDownload(event);" href="https://github.com/epiqueras/ceditor/releases/download/v1.0.3/ceditor-mac.zip" download="ceditor"></a>
+            </label>
+          <a class="back" href="#platforms"></a>
+          <a class="close" href="#"></a>
         </div>
       </div>
     </div>
